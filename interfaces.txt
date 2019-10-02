@@ -18,4 +18,3 @@ C'est ton tour (de jouer)
 Un autre joueur a posé une carte
 Piocher (quand le précédent à mis un +2 par exemple) (passer en paramètre le(s) carte(s) à piocher)
 Changer de sens
-
