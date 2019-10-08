@@ -1,5 +1,7 @@
 package fr.univnantes;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -14,18 +16,17 @@ public class Server extends UnicastRemoteObject implements IServer {
 		super();
 	}
 
-
-
-	public String parler(String phrase) throws RemoteException {
-		return phrase;
+	public String test(String s) throws RemoteException {
+		System.out.println("Client dit: " + s);
+		return s;
 	}
 
 	public static void main(String[] args) {
 		try {
-			Serveur obj = new Server();
+			Server obj = new Server();
 
 			LocateRegistry.createRegistry(1099);
-			Naming.bind("rmi://localhost:1099/Hello", obj);
+			Naming.bind("rmi://localhost:1099/Uno", obj);
 
 			System.out.println("Serveur ready");
 		} catch(Exception e) {

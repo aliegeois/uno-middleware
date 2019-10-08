@@ -10,8 +10,14 @@ public class Client extends UnicastRemoteObject implements IClient {
 	}
 
 	public static void main(String[] args) {
-		IServer stub = (IServer)Naming.lookup("rmi://localhost:1099/Uno");
+		try {
+			IServer stub = (IServer)Naming.lookup("rmi://localhost:1099/Uno");
 
+			stub.test("Grenouille");
+		} catch(Exception e) {
+			System.err.println("Exception: " + e.toString());
+			e.printStackTrace();
+		}
 		
 	}
 }
