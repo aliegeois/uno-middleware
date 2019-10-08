@@ -25,7 +25,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>fr.univnantes.Premier</mainClass>
+							<mainClass>fr.univnantes.Client</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
