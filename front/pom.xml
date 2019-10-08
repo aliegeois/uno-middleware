@@ -15,8 +15,25 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>13</version>
+		</dependency>
+		</dependencies>
+
 	<build>
 		<plugins>
+			<plugin>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-maven-plugin</artifactId>
+					<version>0.0.3</version>
+					<configuration>
+						<mainClass>HelloFX</mainClass>
+					</configuration>
+				</plugin>
+
 			<plugin>
 				<!-- Build an executable JAR -->
 				<groupId>org.apache.maven.plugins</groupId>
@@ -25,7 +42,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>fr.univnantes.Client</mainClass>
+							<mainClass>fr.univnantes.HelloFX</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
