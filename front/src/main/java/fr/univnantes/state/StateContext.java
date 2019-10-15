@@ -1,6 +1,6 @@
 package fr.univnantes.state;
 
-import fr.univnantes.card.*;
+import fr.univnantes.cards.*;
 
 public class StateContext {
 	private State state;
@@ -30,15 +30,15 @@ public class StateContext {
 		state.yourTurn(this);
 	}
 
-	public void playStandardCard(ACard card) throws StateException {
+	public void playStandardCard(ICard card) throws StateException {
 		state.playStandardCard(this, card);
 	}
 
-	public void playWildCard(ACard card, Color color) throws StateException {
+	public void playWildCard(ICard card, Color color) throws StateException {
 		state.playWildCard(this, card, color);
 	}
 
-	public void draw(ACard[] cards) throws StateException {
+	public void draw(ICard[] cards) throws StateException {
 		state.draw(this, cards);
 	}
 	
@@ -59,7 +59,7 @@ public class StateContext {
 		state.winContest(this);
 	}
 
-	public void loseContest(ACard[] cards) throws StateException {
+	public void loseContest(ICard[] cards) throws StateException {
 		state.loseContest(this, cards);
 	}
 
@@ -72,7 +72,7 @@ public class StateContext {
 		state.getSkipped(this);
 	}
 
-	public void counterSkip(ACard card) throws StateException {
+	public void counterSkip(ICard card) throws StateException {
 		state.counterSkip(this, card);
 	}
 
@@ -80,12 +80,12 @@ public class StateContext {
 		state.getPlusTwoed(this);
 	}
 
-	public void counterPlusTwo(ACard card) throws StateException {
+	public void counterPlusTwo(ICard card) throws StateException {
 		state.counterPlusTwo(this, card);
 	}
 
 
-	public void cardPlayedBySomeoneElse(ACard card) throws StateException {
+	public void cardPlayedBySomeoneElse(ICard card) throws StateException {
 		state.cardPlayedBySomeoneElse(this, card);
 	}
 

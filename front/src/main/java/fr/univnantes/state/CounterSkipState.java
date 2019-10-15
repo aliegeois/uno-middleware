@@ -1,10 +1,10 @@
 package fr.univnantes.state;
 
-import fr.univnantes.card.*;
+import fr.univnantes.cards.*;
 
 class CounterSkipState extends State {
 	@Override
-	void counterSkip(StateContext context, ACard card) {
+	void counterSkip(StateContext context, ICard card) {
 
 	}
 }

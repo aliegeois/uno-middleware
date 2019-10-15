@@ -42,7 +42,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>fr.univnantes.HelloFX</mainClass>
+							<mainClass>fr.univnantes.GUI</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

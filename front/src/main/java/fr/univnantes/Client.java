@@ -3,9 +3,10 @@ package fr.univnantes;
 import java.rmi.Naming;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
-import fr.univnantes.card.ACard;
+import fr.univnantes.cards.ICard;
 import fr.univnantes.state.StateContext;
 import javafx.application.Application;
 
@@ -14,7 +15,7 @@ public class Client extends UnicastRemoteObject implements IClient {
 
 	private String name;
 	private StateContext context = new StateContext();
-	private Collection<ACard> cards = new ArrayList<>();
+	private Collection<ICard> cards;
 
 	public Client(String name) throws Exception {
 		this.name = name;
@@ -23,47 +24,62 @@ public class Client extends UnicastRemoteObject implements IClient {
 		server.join(this);
 	}
 
-	public void startGame(ACard[] initialCards) throws Exception {
+	@Override
+	public void startGame(ICard[] initialCards) throws Exception {
 		context.startGame();
+		cards = Arrays.asList(initialCards);
 	}
 
+	@Override
 	public void yourTurn() throws Exception {
 		context.yourTurn();
 	}
 
-	public void draw(ACard[] cards) throws Exception {
+	@Override
+	public void draw(ICard[] cards) throws Exception {
 		context.draw(cards);
 	}
 
+	@Override
 	public void aboutToDrawFourCards() throws Exception {
 		context.aboutToDrawFourCards();
 	}
 
+	@Override
 	public void winContest() throws Exception {
 		context.winContest();
 	}
 
-	public void loseContest(ACard[] cards) throws Exception {
+	@Override
+	public void loseContest(ICard[] cards) throws Exception {
 		context.loseContest(cards);
 	}
 
+	@Override
 	public void getContested() throws Exception {
 		context.getContested();
 	}
 
+	@Override
 	public void getSkipped() throws Exception {
 		context.getSkipped();
 	}
 
+	@Override
 	public void getPlusTwoed() throws Exception {
 		context.getPlusTwoed();
 	}
 
-	public void cardPlayedBySomeoneElse(ACard card) throws Exception {
+	@Override
+	public void cardPlayedBySomeoneElse(ICard card) throws Exception {
 		context.cardPlayedBySomeoneElse(card);
 	}
 
-	public static void main(String[] args) {
+	public String getName() throws Exception {
+		return name;
+	}
+
+	/*public static void main(String[] args) {
 		try {
 			new Client(args[0]);
 			new HelloFX();
@@ -72,5 +88,5 @@ public class Client extends UnicastRemoteObject implements IClient {
 			System.err.println("Exception: " + e.toString());
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

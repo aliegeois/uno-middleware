@@ -1,6 +1,6 @@
 package fr.univnantes.state;
 
-import fr.univnantes.card.*;
+import fr.univnantes.cards.*;
 
 class WaitingState extends State {
 	@Override
@@ -9,7 +9,7 @@ class WaitingState extends State {
 	}
 
 	@Override
-	void draw(StateContext context, ACard[] cards) {
+	void draw(StateContext context, ICard[] cards) {
 
 	}
 
@@ -24,7 +24,7 @@ class WaitingState extends State {
 	}
 
 	@Override
-	void loseContest(StateContext context, ACard[] cards) {
+	void loseContest(StateContext context, ICard[] cards) {
 
 	}
 
@@ -44,7 +44,7 @@ class WaitingState extends State {
 	}
 
 	@Override
-	void cardPlayedBySomeoneElse(StateContext context, ACard card) {
+	void cardPlayedBySomeoneElse(StateContext context, ICard card) {
 
 	}
 }

@@ -1,20 +1,20 @@
 package fr.univnantes.state;
 
-import fr.univnantes.card.*;
+import fr.univnantes.cards.*;
 
 class PlayState extends State {
 	@Override 
-	void playStandardCard(StateContext context, ACard card) {
+	void playStandardCard(StateContext context, ICard card) {
 
 	}
 
 	@Override
-	void playWildCard(StateContext context, ACard card, Color color) {
+	void playWildCard(StateContext context, ICard card, Color color) {
 
 	}
 
 	@Override
-	void draw(StateContext context, ACard[] card) {
+	void draw(StateContext context, ICard[] card) {
 
 	}
 }

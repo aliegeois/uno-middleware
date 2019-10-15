@@ -58,18 +58,19 @@ public class Server extends UnicastRemoteObject implements IServer {
 		if(started)
 			return false;
 		
+		System.out.println(c.getName());
+		
 		ready.put(c,false);
 		return true;
 	}
 
 	public void setReady(IClient client, boolean isReady) throws RemoteException {
 		ready.put(client, isReady);
-		if(isReady && ready.size()>2 && ready.size()<15 && ready.values().stream().filter(e -> e).count() == ready.size())
+		if(isReady && ready.size() > 2 && ready.size() < 15 && ready.values().stream().filter(e -> e).count() == ready.size())
 			start();
 	}
 
 	private void start() {
-
 		initDeck();
 	
 		for (IClient client : ready.keySet()) {
