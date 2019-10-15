@@ -74,8 +74,15 @@ public class Server extends UnicastRemoteObject implements IServer {
 		initDeck();
 	
 		for (IClient client : ready.keySet()) {
-			//Card[] initCards = deck.subList(0, 6);
+			List<Card> initCards = deck.subList(0, 6);
 		}
+
+		while(started){
+			//Game Loop
+
+			
+		}
+
 	}
 
 	public static void main(String[] args) {
