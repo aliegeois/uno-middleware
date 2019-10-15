@@ -76,8 +76,10 @@ public class Server extends UnicastRemoteObject implements IServer {
 			List<Card> initCards = deck.subList(0, 6);
 		}
 
-		while(true){
+		while(started){
 			//Game Loop
+
+			
 		}
 
 	}
