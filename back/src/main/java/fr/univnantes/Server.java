@@ -39,6 +39,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 			for(int i = 1; i <= 2; i++) {
 				for(int j = 1; j <= 9; j++)
 					deck.add(new NumberCard(j, color));
+				
 				deck.add(new EffectCard(Effect.Skip, color));
 				deck.add(new EffectCard(Effect.Reverse, color));
 				deck.add(new EffectCard(Effect.Plus2, color));
@@ -46,8 +47,8 @@ public class Server extends UnicastRemoteObject implements IServer {
 		}
 
 		for(int j = 1; j <= 4; j++) {
-			deck.add(new WildCard(Effect.ChangeColor));
-			deck.add(new WildCard(Effect.Plus4));
+			deck.add(new EffectCard(Effect.ChangeColor, null));
+			deck.add(new EffectCard(Effect.Plus4, null));
 		}
 
 		Collections.shuffle(deck);
