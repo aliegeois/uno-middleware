@@ -1,9 +1,9 @@
 package fr.univnantes.cards;
 
-public abstract class ColoredCard implements Cards{
-    private Color couleur;
+public abstract class ColoredCard implements Card {
+    private Color color;
 
-    public ColoredCard(Color couleur){
-        this.couleur = couleur;
+    public ColoredCard(Color color){
+        this.color = color;
     }
 }

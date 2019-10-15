@@ -1,11 +1,10 @@
 package fr.univnantes.cards;
 
-public class NumberCard extends ColoredCards{
+public class NumberCard extends ColoredCard {
+    public int value;
 
-    public int valeur;
-
-    public NumberCard(int valeur, Color couleur){
-        super(couleur);
-        this.valeur = valeur;
+    public NumberCard(int value, Color color) {
+        super(color);
+        this.value = value;
     }
 }

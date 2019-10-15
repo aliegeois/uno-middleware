@@ -2,7 +2,7 @@ package fr.univnantes.state;
 
 import fr.univnantes.card.*;
 
-class PlayState extends State{
+class PlayState extends State {
 	@Override 
 	void playStandardCard(StateContext context, ACard card) {
 

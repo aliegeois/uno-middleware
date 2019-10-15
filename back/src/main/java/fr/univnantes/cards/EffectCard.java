@@ -1,9 +1,9 @@
 package fr.univnantes.cards;
 
-enum Effect {Skip,Plus2,Reverse};
+import fr.univnantes.cards.Effect;
 
 public class EffectCard extends ColoredCard {
-    private Effetc effect;
+    private Effect effect;
 
     public EffectCard(Effect effect, Color color) {
         super(color);

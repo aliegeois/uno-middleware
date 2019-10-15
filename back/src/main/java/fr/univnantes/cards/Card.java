@@ -1,7 +1,5 @@
 package fr.univnantes.cards;
 
-interface Cards{
+public interface Card {
 
-
-    
 }

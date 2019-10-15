@@ -1,6 +1,6 @@
 package fr.univnantes.state;
 
-class EndGameState extends State{
+class EndGameState extends State {
 	@Override
 	void replay(StateContext context) {
 

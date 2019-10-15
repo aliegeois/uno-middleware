@@ -1,6 +1,6 @@
 package fr.univnantes.cards;
 
-public enum Color{
+public enum Color {
     Rouge,
     Bleu,
     Vert,
