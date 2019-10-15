@@ -1,12 +1,9 @@
 package fr.univnantes;
 
-import java.util.Set;
-
 import fr.univnantes.cards.*;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -14,13 +11,11 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Collections;
 
 public class Server extends UnicastRemoteObject implements IServer {
 	private static final long serialVersionUID = 4419803375268480151L;
 
 	private boolean started = false;
-	private Set<IClient> waiting = new HashSet<>();
 	private Map<IClient, Boolean> ready = new HashMap<>();
 
 	private List<Card> deck = new ArrayList<Card>();
@@ -62,18 +57,23 @@ public class Server extends UnicastRemoteObject implements IServer {
 		if(started)
 			return false;
 		
-		waiting.add(c);
+		ready.put(c,false);
 		return true;
 	}
 
 	public void setReady(IClient client, boolean isReady) throws RemoteException {
 		ready.put(client, isReady);
-		if(ready.values().stream().filter(e -> e).count() == waiting.size())
+		if(isReady && ready.size()>2 && ready.size()<15 && ready.values().stream().filter(e -> e).count() == ready.size())
 			start();
 	}
 
 	private void start() {
 
+		initDeck();
+	
+		for (IClient client : ready.keySet()) {
+			//Card[] initCards = deck.subList(0, 6);
+		}
 	}
 
 	public static void main(String[] args) {
