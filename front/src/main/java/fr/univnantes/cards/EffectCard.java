@@ -2,11 +2,11 @@ package fr.univnantes.cards;
 
 import fr.univnantes.cards.Effect;
 
-public class EffectCard extends ColoredCard {
+public class EffectCard extends ColorCard {
     public final Effect effect;
 
-    public EffectCard(Effect effect, Color color) {
-        super(color);
+    public EffectCard(int id, Color color, Effect effect) {
+        super(id, color);
         this.effect = effect;
     }
 }

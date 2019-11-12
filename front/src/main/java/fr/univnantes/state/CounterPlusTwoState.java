@@ -4,7 +4,7 @@ import fr.univnantes.cards.*;
 
 class CounterPlusTwoState extends State {
 	@Override
-	void counterPlusTwo(StateContext context, ICard card) {
-
+	void counterPlusTwo(Game game, ACard card) {
+		game.setState(new WaitingState());
 	}
 }

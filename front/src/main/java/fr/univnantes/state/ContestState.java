@@ -1,13 +1,16 @@
 package fr.univnantes.state;
 
-class ContestState extends State{
-	@Override
-	void contest(StateContext context) {
+import java.rmi.RemoteException;
 
+class ContestState extends State {
+	@Override
+	void contest(Game game) {
+		try { game.server.contest(game.client, true); } catch(RemoteException e) {}
+		game.setState(new WaitingState());
 	}
 
 	@Override
-	void doNotContest(StateContext context) {
-
+	void doNotContest(Game game) {
+		game.setState(new WaitingState());
 	}
 }

@@ -2,91 +2,90 @@ package fr.univnantes;
 
 import java.rmi.Naming;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
-import fr.univnantes.cards.ICard;
-import fr.univnantes.state.StateContext;
-import javafx.application.Application;
+import fr.univnantes.cards.ACard;
+import fr.univnantes.state.Game;
 
 public class Client extends UnicastRemoteObject implements IClient {
 	private static final long serialVersionUID = 2501464824644144715L;
 
-	private String name;
-	private StateContext context = new StateContext();
-	private Collection<ICard> cards;
+	private final String name;
+	private final IGUI gui;
+	private final Game game;
+	private final IServer server;
+	// private Collection<ICard> cards;
 
-	public Client(String name) throws Exception {
+	public Client(String name, IGUI gui) throws Exception {
 		this.name = name;
+		this.gui = gui;
 
-		IServer server = (IServer)Naming.lookup("rmi://localhost:1099/Uno");
+		server = (IServer)Naming.lookup("rmi://localhost:1099/Uno");
 		server.join(this);
+
+		this.game = new Game(this, server);
 	}
 
 	@Override
-	public void startGame(ICard[] initialCards) throws Exception {
-		context.startGame();
-		cards = Arrays.asList(initialCards);
+	public void startGame(int nbPlayers, ACard[] initialCards, ACard pileCard) throws Exception {
+		game.startGame(nbPlayers, initialCards, pileCard);
+		gui.startGame(initialCards);
 	}
 
 	@Override
 	public void yourTurn() throws Exception {
-		context.yourTurn();
+		game.yourTurn();
+		gui.yourTurn();
 	}
 
 	@Override
-	public void draw(ICard[] cards) throws Exception {
-		context.draw(cards);
+	public void draw(ACard[] cards) throws Exception {
+		game.draw(cards);
+		gui.draw(cards);
 	}
 
 	@Override
 	public void aboutToDrawFourCards() throws Exception {
-		context.aboutToDrawFourCards();
+		game.aboutToDrawFourCards();
+		gui.aboutToDrawFourCards();
 	}
 
 	@Override
 	public void winContest() throws Exception {
-		context.winContest();
+		game.winContest();
+		gui.winContest();
 	}
 
 	@Override
-	public void loseContest(ICard[] cards) throws Exception {
-		context.loseContest(cards);
+	public void loseContest(ACard[] cards) throws Exception {
+		game.loseContest(cards);
+		gui.loseContest(cards);
 	}
 
 	@Override
 	public void getContested() throws Exception {
-		context.getContested();
+		game.getContested();
+		gui.getContested();
 	}
 
 	@Override
 	public void getSkipped() throws Exception {
-		context.getSkipped();
+		game.getSkipped();
+		gui.getSkipped();
 	}
 
 	@Override
 	public void getPlusTwoed() throws Exception {
-		context.getPlusTwoed();
+		game.getPlusTwoed();
+		gui.getPlusTwoed();
 	}
 
 	@Override
-	public void cardPlayedBySomeoneElse(ICard card) throws Exception {
-		context.cardPlayedBySomeoneElse(card);
+	public void cardPlayedBySomeoneElse(ACard card) throws Exception {
+		game.cardPlayedBySomeoneElse(card);
+		gui.cardPlayedBySomeoneElse(card);
 	}
 
 	public String getName() throws Exception {
 		return name;
 	}
-
-	/*public static void main(String[] args) {
-		try {
-			new Client(args[0]);
-			new HelloFX();
-			Application.launch();
-		} catch(Exception e) {
-			System.err.println("Exception: " + e.toString());
-			e.printStackTrace();
-		}
-	}*/
 }

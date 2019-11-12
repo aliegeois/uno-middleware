@@ -4,47 +4,47 @@ import fr.univnantes.cards.*;
 
 class WaitingState extends State {
 	@Override
-	void yourTurn(StateContext context) {
-		context.setState(new PlayState());
+	void yourTurn(Game game) {
+		game.setState(new PlayState());
 	}
 
 	@Override
-	void draw(StateContext context, ICard[] cards) {
-
-	}
-
-	@Override
-	void aboutToDrawFourCards(StateContext context) {
-		context.setState(new ContestState());
-	}
-
-	@Override
-	void winContest(StateContext context) {
+	void draw(Game game, ACard[] cards) {
 
 	}
 
 	@Override
-	void loseContest(StateContext context, ICard[] cards) {
+	void aboutToDrawFourCards(Game game) {
+		game.setState(new ContestState());
+	}
+
+	@Override
+	void winContest(Game game) {
 
 	}
 
 	@Override
-	void getContested(StateContext context) {
+	void loseContest(Game game, ACard[] cards) {
 
 	}
 
 	@Override
-	void getSkipped(StateContext context) {
+	void getContested(Game game) {
 
 	}
 
 	@Override
-	void getPlusTwoed(StateContext context) {
+	void getSkipped(Game game) {
 
 	}
 
 	@Override
-	void cardPlayedBySomeoneElse(StateContext context, ICard card) {
+	void getPlusTwoed(Game game) {
+
+	}
+
+	@Override
+	void cardPlayedBySomeoneElse(Game game, ACard card) {
 
 	}
 }

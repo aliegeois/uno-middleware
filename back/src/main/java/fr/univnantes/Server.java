@@ -18,7 +18,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	private boolean started = false;
 	private Map<IClient, Boolean> ready = new HashMap<>();
 
-	private List<Card> deck = new ArrayList<Card>();
+	private List<ACard> deck = new ArrayList<ACard>();
 
 	public Server() throws Exception {
 		super();
@@ -37,13 +37,13 @@ public class Server extends UnicastRemoteObject implements IServer {
 				
 				deck.add(new EffectCard(Effect.Skip, color));
 				deck.add(new EffectCard(Effect.Reverse, color));
-				deck.add(new EffectCard(Effect.Plus2, color));
+				deck.add(new EffectCard(Effect.PlusTwo, color));
 			}
 		}
 
 		for(int j = 1; j <= 4; j++) {
-			deck.add(new EffectCard(Effect.ChangeColor, null));
-			deck.add(new EffectCard(Effect.Plus4, null));
+			deck.add(new EffectCard(Effect.Wild, null));
+			deck.add(new EffectCard(Effect.PlusFour, null));
 		}
 
 		Collections.shuffle(deck);
@@ -74,7 +74,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 		initDeck();
 	
 		for (IClient client : ready.keySet()) {
-			List<Card> initCards = deck.subList(0, 6);
+			List<ACard> initCards = deck.subList(0, 6);
 		}
 
 		while(started){

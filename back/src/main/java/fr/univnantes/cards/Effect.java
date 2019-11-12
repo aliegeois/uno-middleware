@@ -2,8 +2,8 @@ package fr.univnantes.cards;
 
 public enum Effect {
 	Skip,
-	Plus2,
+	PlusTwo,
 	Reverse,
-	ChangeColor,
-	Plus4
+	Wild,
+	PlusFour
 };

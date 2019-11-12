@@ -1,9 +1,10 @@
 package fr.univnantes.cards;
 
-public abstract class ColoredCard implements ICard {
+public abstract class ColorCard extends ACard {
     public final Color color;
 
-    public ColoredCard(Color color) {
+    public ColorCard(Color color) {
+		super();
         this.color = color;
     }
 }

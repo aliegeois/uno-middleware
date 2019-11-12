@@ -4,17 +4,17 @@ import fr.univnantes.cards.*;
 
 class PlayState extends State {
 	@Override 
-	void playStandardCard(StateContext context, ICard card) {
+	void playStandardCard(Game game, ACard card) {
+		
+	}
+
+	@Override
+	void playWildCard(Game game, ACard card, Color color) {
 
 	}
 
 	@Override
-	void playWildCard(StateContext context, ICard card, Color color) {
-
-	}
-
-	@Override
-	void draw(StateContext context, ICard[] card) {
+	void draw(Game game, ACard[] cards) {
 
 	}
 }

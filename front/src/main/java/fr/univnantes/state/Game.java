@@ -1,18 +1,42 @@
 package fr.univnantes.state;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import fr.univnantes.IClient;
+import fr.univnantes.IServer;
 import fr.univnantes.cards.*;
 
-public class StateContext {
-	private State state;
+public class Game {
+	final IClient client;
+	final IServer server;
 
-	public StateContext() {
+	State state;
+	Collection<ACard> cards = new ArrayList<>(); // Liste de nos cartes
+	Integer[] opponentsCards; // Nombre de cartes de chaque autre joueur
+	int nbPlayers;
+	ACard pileCard; // La carte en haut de la pile
+	int initialNumberOfCards;
+
+	public Game(IClient client, IServer server) {
+		this.client = client;
+		this.server = server;
+
 		state = new InitialState();
 	}
+
+	public Collection<ACard> getCards() {
+		return cards;
+	}
+
+	void addCards(Collection<ACard> cards) {
+		this.cards.addAll(cards);
+	}
+
 
 	void setState(State newState) {
 		state = newState;
 	}
-
 
 	public void joinLobby() throws StateException {
 		state.joinLobby(this);
@@ -22,23 +46,23 @@ public class StateContext {
 		state.leaveLobby(this);
 	}
 
-	public void startGame() throws StateException {
-		state.startGame(this);
+	public void startGame(int nbPlayers, ACard[] initialCards, ACard pileCard) throws StateException {
+		state.startGame(this, nbPlayers, initialCards, pileCard);
 	}
 
 	public void yourTurn() throws StateException {
 		state.yourTurn(this);
 	}
 
-	public void playStandardCard(ICard card) throws StateException {
+	public void playStandardCard(ACard card) throws StateException {
 		state.playStandardCard(this, card);
 	}
 
-	public void playWildCard(ICard card, Color color) throws StateException {
+	public void playWildCard(ACard card, Color color) throws StateException {
 		state.playWildCard(this, card, color);
 	}
 
-	public void draw(ICard[] cards) throws StateException {
+	public void draw(ACard[] cards) throws StateException {
 		state.draw(this, cards);
 	}
 	
@@ -59,7 +83,7 @@ public class StateContext {
 		state.winContest(this);
 	}
 
-	public void loseContest(ICard[] cards) throws StateException {
+	public void loseContest(ACard[] cards) throws StateException {
 		state.loseContest(this, cards);
 	}
 
@@ -72,7 +96,7 @@ public class StateContext {
 		state.getSkipped(this);
 	}
 
-	public void counterSkip(ICard card) throws StateException {
+	public void counterSkip(ACard card) throws StateException {
 		state.counterSkip(this, card);
 	}
 
@@ -80,12 +104,12 @@ public class StateContext {
 		state.getPlusTwoed(this);
 	}
 
-	public void counterPlusTwo(ICard card) throws StateException {
+	public void counterPlusTwo(ACard card) throws StateException {
 		state.counterPlusTwo(this, card);
 	}
 
 
-	public void cardPlayedBySomeoneElse(ICard card) throws StateException {
+	public void cardPlayedBySomeoneElse(ACard card) throws StateException {
 		state.cardPlayedBySomeoneElse(this, card);
 	}
 
