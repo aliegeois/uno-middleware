@@ -4,6 +4,7 @@ import fr.univnantes.cards.*;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	private Map<IClient, Boolean> ready = new HashMap<>();
 
 	private List<ACard> deck = new ArrayList<ACard>();
+	private List<IClient> players = new ArrayList<>();
 
 	public Server() throws Exception {
 		super();
@@ -27,6 +29,9 @@ public class Server extends UnicastRemoteObject implements IServer {
 		Naming.bind("rmi://localhost:1099/Uno", this);
 	}
 
+	/**
+	 * Initialise le deck
+	 */
 	public void initDeck() {
 		for(Color color : Color.values()) {
 			deck.add(new NumberCard(0, color));
@@ -66,28 +71,68 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	public void setReady(IClient client, boolean isReady) throws RemoteException {
 		ready.put(client, isReady);
-		if(isReady && ready.size() > 2 && ready.size() < 15 && ready.values().stream().filter(e -> e).count() == ready.size())
+		if(isReady && ready.size() > 2 && ready.size() < 15 && ready.values().stream().filter(e -> e).count() == ready.size()) {
 			start();
+		}
 	}
 
 	private void start() {
 		initDeck();
-	
-		for (IClient client : ready.keySet()) {
-			List<ACard> initCards = deck.subList(0, 6);
+		players = new ArrayList<>(ready.keySet());
+		List<List<ACard>> cards = new ArrayList<>(); 
+
+		Iterator<ACard> iter = deck.iterator();
+
+		for(int i = 0; i < players.size(); i++) {
+			int cardsDistributed = 0;
+			while(iter.hasNext() && cardsDistributed < 6) {
+				ACard current = iter.next();
+				iter.remove();
+				cards.get(i).add(current);
+				cardsDistributed++;
+			}
 		}
 
-		while(started){
-			//Game Loop
+		ACard pileCard = deck.get(0);
+		deck.remove(0);
 
-			
+		for(int i = 0; i < players.size(); i++) {
+			try {
+				players.get(i).setCards(cards.get(i));
+				players.get(i).startGame(players.size(), cards.get(i), pileCard);
+			} catch(RemoteException e) {
+				e.printStackTrace();
+			}
 		}
+	}
+
+	@Override
+	public void contest(IClient client, boolean contest) throws RemoteException {
+
+	}
+
+	@Override
+	public void counterPlusTwo(IClient client, ACard card) {
+		
+
+	}
+
+	@Override
+	public void playStandardCard(IClient client, ACard card) throws RemoteException {
+		
+
+	}
+
+	@Override
+	public void playWildCard(IClient client, ACard card, Color color) throws RemoteException {
+		
 
 	}
 
 	public static void main(String[] args) {
 		try {
 			new Server();
+			System.out.println("Server started");
 		} catch(Exception e) {
 			System.err.println("Exception: " + e.toString());
 			e.printStackTrace();

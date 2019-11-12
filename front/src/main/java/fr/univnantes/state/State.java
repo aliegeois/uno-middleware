@@ -1,9 +1,11 @@
 package fr.univnantes.state;
 
+import fr.univnantes.IClient;
 import fr.univnantes.cards.*;
 
 class State {
-	void joinLobby(Game game) throws StateException {throw new StateException();}
+	void setReady(Game game, boolean ready) throws StateException {throw new StateException();}
+	void joinLobby(Game game, String name) throws StateException {throw new StateException();}
 	void leaveLobby(Game game) throws StateException {throw new StateException();}
 	void startGame(Game game, int nbPlayers, ACard[] initialCards, ACard pileCard) throws StateException {throw new StateException();}
 
@@ -24,7 +26,7 @@ class State {
 	void getPlusTwoed(Game game) throws StateException {throw new StateException();}
 	void counterPlusTwo(Game game, ACard card) throws StateException {throw new StateException();}
 
-	void cardPlayedBySomeoneElse(Game game, ACard card) throws StateException {throw new StateException();}
+	void cardPlayedBySomeoneElse(Game game, IClient client, ACard card) throws StateException {throw new StateException();}
 
 	void replay(Game game) throws StateException {throw new StateException();}
 	void quit(Game game) throws StateException { throw new StateException();}

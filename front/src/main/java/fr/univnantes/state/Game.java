@@ -2,6 +2,8 @@ package fr.univnantes.state;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.univnantes.IClient;
 import fr.univnantes.IServer;
@@ -13,7 +15,9 @@ public class Game {
 
 	State state;
 	Collection<ACard> cards = new ArrayList<>(); // Liste de nos cartes
-	Integer[] opponentsCards; // Nombre de cartes de chaque autre joueur
+	
+	Map<String, Integer[]> opponentsCards = new HashMap<>();
+	// Integer[] opponentsCards; // Nombre de cartes de chaque autre joueur
 	int nbPlayers;
 	ACard pileCard; // La carte en haut de la pile
 	int initialNumberOfCards;
@@ -38,8 +42,12 @@ public class Game {
 		state = newState;
 	}
 
-	public void joinLobby() throws StateException {
-		state.joinLobby(this);
+	public void setReady(boolean ready) throws StateException {
+		state.setReady(this, ready);
+	}
+
+	public void joinLobby(String name) throws StateException {
+		state.joinLobby(this, name);
 	}
 
 	public void leaveLobby() throws StateException {
@@ -109,8 +117,8 @@ public class Game {
 	}
 
 
-	public void cardPlayedBySomeoneElse(ACard card) throws StateException {
-		state.cardPlayedBySomeoneElse(this, card);
+	public void cardPlayedBySomeoneElse(IClient client, ACard card) throws StateException {
+		state.cardPlayedBySomeoneElse(this, client, card);
 	}
 
 	public void replay() throws StateException {

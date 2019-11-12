@@ -24,7 +24,7 @@ public interface IGUI {
 	public void getPlusTwoed();
 	public void counterPlusTwo(ACard card);
 
-	public void cardPlayedBySomeoneElse(ACard card);
+	public void cardPlayedBySomeoneElse(IClient client, ACard card);
 
 	public void replay();
 	public void quit();

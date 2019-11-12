@@ -142,7 +142,7 @@ public class GUI extends Application implements IGUI {
 
 
 	@Override
-	public void cardPlayedBySomeoneElse(ACard card) {
+	public void cardPlayedBySomeoneElse(IClient client, ACard card) {
 		
 	}
 
