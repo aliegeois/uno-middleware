@@ -86,8 +86,8 @@ public class Game {
 		state.aboutToDrawFourCards(this);
 	}
 
-	public void contest() throws StateException {
-		state.contest(this);
+	public void contest(IRemoteClient contestedClient) throws StateException {
+		state.contest(this, contestedClient);
 	}
 
 	public void doNotContest() throws StateException {
@@ -115,12 +115,12 @@ public class Game {
 		state.counterSkip(this, card);
 	}
 
-	public void getPlusTwoed() throws StateException {
-		state.getPlusTwoed(this);
+	public void getPlusTwoed(int quantity) throws StateException {
+		state.getPlusTwoed(this, quantity);
 	}
 
-	public void counterPlusTwo(ACard card) throws StateException {
-		state.counterPlusTwo(this, card);
+	public void counterPlusTwo(ACard card, int quantity) throws StateException {
+		state.counterPlusTwo(this, card, quantity);
 	}
 
 

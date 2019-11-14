@@ -108,9 +108,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void getPlusTwoed() throws RemoteException {
+	public void getPlusTwoed(int quantity) throws RemoteException {
 		try {
-			game.getPlusTwoed();
+			game.getPlusTwoed(quantity);
 		} catch(StateException e) {}
 		gui.getPlusTwoed();
 	}
@@ -131,9 +131,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void contest() {
+	public void contest(IRemoteClient contestedClient) {
 		try {
-			game.contest();
+			game.contest(contestedClient);
 		} catch(StateException e) {}
 	}
 

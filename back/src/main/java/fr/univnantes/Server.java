@@ -22,6 +22,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	private List<ACard> deck = new ArrayList<ACard>();
 	private List<IRemoteClient> players = new ArrayList<>();
 	private ACard pileCard;
+	private boolean clockwise = true;
 
 	public Server() throws Exception {
 		super();
@@ -108,36 +109,94 @@ public class Server extends UnicastRemoteObject implements IServer {
 	}
 
 	@Override
-	public void contest(IRemoteClient client) throws RemoteException {
-
+	public void contest(IRemoteClient contestingClient, IRemoteClient contestedClient) throws RemoteException {
+		long playableCards = contestedClient.getCards().stream()
+		.filter(card -> card instanceof EffectCard ? ((EffectCard)card).effect != Effect.Wild : true) // On récupères toutes les cartes sauf wild
+		.filter(card -> {
+			boolean condition = card.color == pileCard.color;
+			if(card instanceof NumberCard) {
+				condition |= ((NumberCard)card).value == ((NumberCard)pileCard).value;
+			} else if(card instanceof EffectCard) { // Selon les règles, pas besoin de vérifer les wilds
+				condition |= ((EffectCard)card).effect == ((EffectCard)pileCard).effect;
+			}
+			return condition; // On récupère toutes les cartes qui sont possiblement jouables
+		}).count();
+		if(playableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
+			// Choisir les 4 cartes à piocher
+			// Dire à contestingClient qu'il pioche ces cartes
+		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
+			contestingClient.winContest();
+			// Choisir les cartes à piocher pour contestedClient
+			// Les lui faire piocher;
+		}
 	}
 
 	@Override
 	public void doNotContest(IRemoteClient client) throws RemoteException {
-
+		// Définir liste des cartes à piocher
+		// Faire piocher au client 4 cartes
+		nextClient(client).yourTurn();
 	}
 
 	@Override
-	public void counterPlusTwo(IRemoteClient client, ACard card) {
-		
-
+	public void counterPlusTwo(IRemoteClient client, ACard card, int quantity) throws RemoteException {
+		sendCardPlayed(client, card);
+		nextClient(client).getPlusTwoed(quantity);
 	}
 
 	@Override
 	public void counterSkip(IRemoteClient client, ACard card) throws RemoteException {
-
+		sendCardPlayed(client, card);
+		nextClient(nextClient(client)).yourTurn();
 	}
 
 	@Override
-	public void playStandardCard(IRemoteClient client, ACard card) throws RemoteException {
-		
+	public void playCard(IRemoteClient client, ACard card) throws RemoteException {
+		sendCardPlayed(client, card);
 
+		if(client.getCards().size() == 0) {
+			// Dire à tout le monde qu'il a gagné
+		}
+
+		if(card instanceof EffectCard) {
+			switch(((EffectCard)card).effect) {
+				case Skip:
+					nextClient(client).getSkipped();
+					break;
+				
+				case PlusTwo:
+					nextClient(client).getPlusTwoed(1);
+					break;
+				
+				case Reverse:
+					clockwise = !clockwise;
+					nextClient(client).yourTurn();
+					break;
+
+				case PlusFour:
+					nextClient(client).aboutToDrawFourCards();
+					break;
+
+				default:
+			}
+		} else if(card instanceof NumberCard) {
+			nextClient(client).yourTurn();
+		}
 	}
 
-	@Override
-	public void playWildCard(IRemoteClient client, ACard card, Color color) throws RemoteException {
-		
+	private IRemoteClient nextClient(IRemoteClient client) {
+		return players.get((players.indexOf(client) + (clockwise ? 1 : -1) + players.size()) % players.size());
+	}
 
+	private void sendCardPlayed(IRemoteClient client, ACard card) {
+		pileCard = card;
+
+		players.stream().filter(player -> {
+			try { return player.getName() != client.getName(); } catch(RemoteException e) {}
+			return false;
+		}).forEach(player -> {
+			try { player.cardPlayedBySomeoneElse(client, card); } catch(RemoteException e) {}
+		});
 	}
 
 	public static void main(String[] args) {

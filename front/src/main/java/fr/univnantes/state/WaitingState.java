@@ -42,7 +42,8 @@ class WaitingState extends State {
 	}
 
 	@Override
-	void getPlusTwoed(Game game) {
+	void getPlusTwoed(Game game, int quantity) {
+		
 		game.setState(new CounterPlusTwoState());
 	}
 

@@ -15,7 +15,7 @@ public interface IRemoteClient extends Remote {
 	public void loseContest(List<ACard> cards) throws RemoteException;
 	public void getContested() throws RemoteException;
 	public void getSkipped() throws RemoteException;
-	public void getPlusTwoed() throws RemoteException;
+	public void getPlusTwoed(int quantity) throws RemoteException;
 	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) throws RemoteException;
 
 	public void setCards(List<ACard> cards) throws RemoteException;
