@@ -1,6 +1,6 @@
 package fr.univnantes.cards;
 
-public class NumberCard extends ColorCard {
+public class NumberCard extends ACard {
     public final int value;
 
     public NumberCard(int id, Color color, int value) {

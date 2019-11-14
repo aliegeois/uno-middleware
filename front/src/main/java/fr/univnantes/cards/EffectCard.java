@@ -2,7 +2,7 @@ package fr.univnantes.cards;
 
 import fr.univnantes.cards.Effect;
 
-public class EffectCard extends ColorCard {
+public class EffectCard extends ACard {
     public final Effect effect;
 
     public EffectCard(int id, Color color, Effect effect) {
@@ -15,7 +15,7 @@ public class EffectCard extends ColorCard {
         if(pileCard instanceof EffectCard){
             return((this.effect == ((EffectCard) pileCard).effect) || (this.color == ((EffectCard) pileCard).color));
         }else{
-            return (this.color == ((NumberCard) pileCard).color);
+            return (this.color == pileCard.color);
         }
     }
 }
