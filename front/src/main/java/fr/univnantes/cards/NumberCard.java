@@ -10,6 +10,10 @@ public class NumberCard extends ACard {
 
     @Override
     public boolean canBePlayed(ACard pileCard){
-        return true;
+        if(pileCard instanceof NumberCard){
+            return ((this.color == pileCard.color) || (this.value == ((NumberCard) pileCard).value));
+        }else{
+            return (this.color == pileCard.color);
+        }
     }
 }
