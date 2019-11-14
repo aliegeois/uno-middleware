@@ -1,5 +1,7 @@
 package fr.univnantes;
 
+import java.util.List;
+
 import fr.univnantes.cards.ACard;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -29,7 +31,9 @@ public class GUI extends Application implements IGUI {
 			public void handle(ActionEvent event) {
 				try {
 					new Client(tfName.getText(), gui);
-				} catch(Exception e) {}
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		GridPane gp = new GridPane();
@@ -48,7 +52,6 @@ public class GUI extends Application implements IGUI {
 		stage.show();
 	}
 
-	@Override
 	public void joinLobby() {
 		GridPane gp = new GridPane();
 
@@ -58,33 +61,30 @@ public class GUI extends Application implements IGUI {
 		stage.setScene(lobby);
 	}
 
-	@Override
 	public void leaveLobby() {
 
 	}
 
 	@Override
-	public void startGame(ACard[] initialCards) {
+	public void startGame(List<ACard> initialCards) {
 
 	}
 
 	@Override
 	public void yourTurn() {
-		
+		System.out.println("Début de votre tour");
 	}
 
-	@Override
 	public void playStandardCard(ACard card) {
-		
+		System.out.println("Vous jouez la carte: " + card);
 	}
 
-	@Override
 	public void playWildCard(ACard card) {
 		
 	}
 
 	@Override
-	public void draw(ACard[] cards) {
+	public void draw(List<ACard> cards) {
 		
 	}
 
@@ -94,12 +94,10 @@ public class GUI extends Application implements IGUI {
 		
 	}
 
-	@Override
 	public void contest() {
 		
 	}
 
-	@Override
 	public void doNotContest() {
 		
 	}
@@ -110,7 +108,7 @@ public class GUI extends Application implements IGUI {
 	}
 
 	@Override
-	public void loseContest(ACard[] cards) {
+	public void loseContest(List<ACard> cards) {
 		
 	}
 
@@ -125,7 +123,6 @@ public class GUI extends Application implements IGUI {
 		
 	}
 
-	@Override
 	public void counterSkip(ACard card) {
 		
 	}
@@ -135,24 +132,21 @@ public class GUI extends Application implements IGUI {
 		
 	}
 
-	@Override
 	public void counterPlusTwo(ACard card) {
 		
 	}
 
 
 	@Override
-	public void cardPlayedBySomeoneElse(IClient client, ACard card) {
+	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) {
 		
 	}
 
 
-	@Override
 	public void replay() {
 		
 	}
 
-	@Override
 	public void quit() {
 		
 	}

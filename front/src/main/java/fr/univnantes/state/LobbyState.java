@@ -1,7 +1,7 @@
 package fr.univnantes.state;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
+import java.util.List;
 
 import fr.univnantes.cards.ACard;
 
@@ -16,9 +16,10 @@ class LobbyState extends State {
 	}
 
 	@Override
-	void startGame(Game game, int nbPlayers, ACard[] initialCards, ACard pileCard) {
+	void startGame(Game game, int nbPlayers, List<ACard> initialCards, ACard pileCard) {
 		game.nbPlayers = nbPlayers;
-		Collections.addAll(game.cards, initialCards);
+		game.cards.addAll(initialCards);
+		
 		game.setState(new WaitingState());
 	}
 }

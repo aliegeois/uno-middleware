@@ -8,13 +8,13 @@ import fr.univnantes.cards.Color;
 
 public interface IServer extends Remote {
 	public String test(String s) throws RemoteException;
-	public boolean join(IClient client) throws RemoteException;
-	public void setReady(IClient client, boolean ready) throws RemoteException;
+	public boolean join(IRemoteClient client) throws RemoteException;
+	public void setReady(IRemoteClient client, boolean ready) throws RemoteException;
 
-	public void contest(IClient client) throws RemoteException;
-	public void doNotContest(IClient client) throws RemoteException;
-	public void counterPlusTwo(IClient client, ACard card) throws RemoteException;
-	public void counterSkip(IClient client, ACard card) throws RemoteException;
-	public void playStandardCard(IClient client, ACard card) throws RemoteException;
-	public void playWildCard(IClient client, ACard card, Color color) throws RemoteException;
+	public void contest(IRemoteClient client) throws RemoteException;
+	public void doNotContest(IRemoteClient client) throws RemoteException;
+	public void counterPlusTwo(IRemoteClient client, ACard card) throws RemoteException;
+	public void counterSkip(IRemoteClient client, ACard card) throws RemoteException;
+	public void playStandardCard(IRemoteClient client, ACard card) throws RemoteException;
+	public void playWildCard(IRemoteClient client, ACard card, Color color) throws RemoteException;
 }

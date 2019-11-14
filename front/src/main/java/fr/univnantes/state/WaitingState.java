@@ -1,7 +1,9 @@
 package fr.univnantes.state;
 
-import fr.univnantes.IClient;
-import fr.univnantes.cards.*;
+import java.util.List;
+
+import fr.univnantes.IRemoteClient;
+import fr.univnantes.cards.ACard;
 
 class WaitingState extends State {
 	@Override
@@ -10,7 +12,7 @@ class WaitingState extends State {
 	}
 
 	@Override
-	void draw(Game game, ACard[] cards) {
+	void draw(Game game, List<ACard> cards) {
 		// Rester dans le même état
 	}
 
@@ -25,7 +27,7 @@ class WaitingState extends State {
 	}
 
 	@Override
-	void loseContest(Game game, ACard[] cards) {
+	void loseContest(Game game, List<ACard> cards) {
 		game.setState(new WaitingState());
 	}
 
@@ -45,7 +47,7 @@ class WaitingState extends State {
 	}
 
 	@Override
-	void cardPlayedBySomeoneElse(Game game, IClient client, ACard card) {
-
+	void cardPlayedBySomeoneElse(Game game, IRemoteClient client, ACard card) {
+		
 	}
 }

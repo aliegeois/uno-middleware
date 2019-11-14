@@ -17,10 +17,10 @@ public class Server extends UnicastRemoteObject implements IServer {
 	private static final long serialVersionUID = 4419803375268480151L;
 
 	private boolean started = false;
-	private Map<IClient, Boolean> ready = new HashMap<>();
+	private Map<IRemoteClient, Boolean> ready = new HashMap<>();
 
 	private List<ACard> deck = new ArrayList<ACard>();
-	private List<IClient> players = new ArrayList<>();
+	private List<IRemoteClient> players = new ArrayList<>();
 
 	public Server() throws Exception {
 		super();
@@ -59,7 +59,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 		return s;
 	}
 
-	public boolean join(IClient c) throws RemoteException {
+	public boolean join(IRemoteClient c) throws RemoteException {
 		if(started)
 			return false;
 		
@@ -69,7 +69,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 		return true;
 	}
 
-	public void setReady(IClient client, boolean isReady) throws RemoteException {
+	public void setReady(IRemoteClient client, boolean isReady) throws RemoteException {
 		ready.put(client, isReady);
 		if(isReady && ready.size() > 2 && ready.size() < 15 && ready.values().stream().filter(e -> e).count() == ready.size()) {
 			start();
@@ -107,24 +107,34 @@ public class Server extends UnicastRemoteObject implements IServer {
 	}
 
 	@Override
-	public void contest(IClient client, boolean contest) throws RemoteException {
+	public void contest(IRemoteClient client) throws RemoteException {
 
 	}
 
 	@Override
-	public void counterPlusTwo(IClient client, ACard card) {
+	public void doNotContest(IRemoteClient client) throws RemoteException {
+
+	}
+
+	@Override
+	public void counterPlusTwo(IRemoteClient client, ACard card) {
 		
 
 	}
 
 	@Override
-	public void playStandardCard(IClient client, ACard card) throws RemoteException {
+	public void counterSkip(IRemoteClient client, ACard card) throws RemoteException {
+
+	}
+
+	@Override
+	public void playStandardCard(IRemoteClient client, ACard card) throws RemoteException {
 		
 
 	}
 
 	@Override
-	public void playWildCard(IClient client, ACard card, Color color) throws RemoteException {
+	public void playWildCard(IRemoteClient client, ACard card, Color color) throws RemoteException {
 		
 
 	}

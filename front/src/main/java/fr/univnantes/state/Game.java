@@ -3,18 +3,21 @@ package fr.univnantes.state;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import fr.univnantes.IClient;
+import fr.univnantes.Client;
 import fr.univnantes.IServer;
-import fr.univnantes.cards.*;
+import fr.univnantes.IRemoteClient;
+import fr.univnantes.cards.ACard;
+import fr.univnantes.cards.Color;
 
 public class Game {
-	final IClient client;
+	final Client client;
 	final IServer server;
 
 	State state;
-	Collection<ACard> cards = new ArrayList<>(); // Liste de nos cartes
+	List<ACard> cards = new ArrayList<>(); // Liste de nos cartes
 	
 	Map<String, Integer[]> opponentsCards = new HashMap<>();
 	// Integer[] opponentsCards; // Nombre de cartes de chaque autre joueur
@@ -22,14 +25,14 @@ public class Game {
 	ACard pileCard; // La carte en haut de la pile
 	int initialNumberOfCards;
 
-	public Game(IClient client, IServer server) {
+	public Game(Client client, IServer server) {
 		this.client = client;
 		this.server = server;
 
 		state = new InitialState();
 	}
 
-	public Collection<ACard> getCards() {
+	public List<ACard> getCards() {
 		return cards;
 	}
 
@@ -54,7 +57,7 @@ public class Game {
 		state.leaveLobby(this);
 	}
 
-	public void startGame(int nbPlayers, ACard[] initialCards, ACard pileCard) throws StateException {
+	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws StateException {
 		state.startGame(this, nbPlayers, initialCards, pileCard);
 	}
 
@@ -70,7 +73,7 @@ public class Game {
 		state.playWildCard(this, card, color);
 	}
 
-	public void draw(ACard[] cards) throws StateException {
+	public void draw(List<ACard> cards) throws StateException {
 		state.draw(this, cards);
 	}
 	
@@ -91,7 +94,7 @@ public class Game {
 		state.winContest(this);
 	}
 
-	public void loseContest(ACard[] cards) throws StateException {
+	public void loseContest(List<ACard> cards) throws StateException {
 		state.loseContest(this, cards);
 	}
 
@@ -117,7 +120,7 @@ public class Game {
 	}
 
 
-	public void cardPlayedBySomeoneElse(IClient client, ACard card) throws StateException {
+	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) throws StateException {
 		state.cardPlayedBySomeoneElse(this, client, card);
 	}
 
