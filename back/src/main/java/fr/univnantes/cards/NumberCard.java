@@ -3,7 +3,7 @@ package fr.univnantes.cards;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NumberCard extends ColorCard {
+public class NumberCard extends ACard {
     public final int value;
 
     public NumberCard(int value, Color color) {

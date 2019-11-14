@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import fr.univnantes.Client;
-import fr.univnantes.IServer;
 import fr.univnantes.IRemoteClient;
+import fr.univnantes.IServer;
 import fr.univnantes.cards.ACard;
 import fr.univnantes.cards.Color;
 
@@ -37,6 +37,10 @@ public class Game {
 	}
 
 	void addCards(Collection<ACard> cards) {
+		System.out.println("Nouvelles cartes:");
+		for(ACard card : cards)
+			System.out.println(card);
+
 		this.cards.addAll(cards);
 	}
 

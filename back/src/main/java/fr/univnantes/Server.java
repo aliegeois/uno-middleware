@@ -21,6 +21,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	private List<ACard> deck = new ArrayList<ACard>();
 	private List<IRemoteClient> players = new ArrayList<>();
+	private ACard pileCard;
 
 	public Server() throws Exception {
 		super();
@@ -93,7 +94,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 			}
 		}
 
-		ACard pileCard = deck.get(0);
+		this.pileCard = deck.get(0);
 		deck.remove(0);
 
 		for(int i = 0; i < players.size(); i++) {
