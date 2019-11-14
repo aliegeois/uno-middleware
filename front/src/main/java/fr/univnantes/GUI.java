@@ -29,7 +29,10 @@ public class GUI extends Application implements IGUI {
 			public void handle(ActionEvent event) {
 				try {
 					new Client(tfName.getText(), gui);
-				} catch(Exception e) {}
+					System.out.print("mes boules");
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		GridPane gp = new GridPane();

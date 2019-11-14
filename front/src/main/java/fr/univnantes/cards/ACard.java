@@ -6,4 +6,6 @@ public abstract class ACard {
 	public ACard(int id) {
 		this.id = id;
 	}
+
+	public abstract boolean canBePlayed(ACard pileCard);
 }

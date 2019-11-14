@@ -3,6 +3,7 @@ package fr.univnantes.state;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import fr.univnantes.IClient;
@@ -34,6 +35,13 @@ public class Game {
 	}
 
 	void addCards(Collection<ACard> cards) {
+
+		Iterator<ACard> carteIterator = cards.iterator();
+
+		while(carteIterator.hasNext()){
+			System.out.println(carteIterator.next());
+		}
+
 		this.cards.addAll(cards);
 	}
 

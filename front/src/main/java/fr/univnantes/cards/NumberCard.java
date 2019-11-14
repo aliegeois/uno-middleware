@@ -7,4 +7,9 @@ public class NumberCard extends ColorCard {
         super(id, color);
         this.value = value;
     }
+
+    @Override
+    public boolean canBePlayed(ACard pileCard){
+        return true;
+    }
 }
