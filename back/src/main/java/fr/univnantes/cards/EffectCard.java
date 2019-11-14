@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 import fr.univnantes.cards.Effect;
 
-public class EffectCard extends ColorCard {
+public class EffectCard extends ACard {
     public final Effect effect;
 
     public EffectCard(Effect effect, Color color) {
