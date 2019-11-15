@@ -196,10 +196,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	private void sendCardPlayed(IRemoteClient client, ACard card) {
 		pileCard = card;
 
-		players.stream().filter(player -> {
-			try { return player.getName() != client.getName(); } catch(RemoteException e) {}
-			return false;
-		}).forEach(player -> {
+		players.stream().filter(player -> player != client).forEach(player -> {
 			try { player.cardPlayedBySomeoneElse(client, card); } catch(RemoteException e) {}
 		});
 	}
