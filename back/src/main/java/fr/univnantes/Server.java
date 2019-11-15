@@ -111,7 +111,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	@Override
 	public void contest(IRemoteClient contestingClient, IRemoteClient contestedClient) throws RemoteException {
 		long playableCards = contestedClient.getCards().stream()
-		.filter(card -> card instanceof EffectCard ? ((EffectCard)card).effect != Effect.Wild : true) // On récupères toutes les cartes sauf wild
+		.filter(card -> card instanceof EffectCard ? (((EffectCard)card).effect != Effect.Wild) && (((EffectCard)card).effect != Effect.PlusFour) : true) // On récupères toutes les cartes sauf wild et plusfour
 		.filter(card -> {
 			boolean condition = card.color == pileCard.color;
 			if(card instanceof NumberCard) {
@@ -142,6 +142,11 @@ public class Server extends UnicastRemoteObject implements IServer {
 	public void counterPlusTwo(IRemoteClient client, ACard card, int quantity) throws RemoteException {
 		sendCardPlayed(client, card);
 		nextClient(client).getPlusTwoed(quantity);
+	}
+
+	@Override
+	public void doNotCounterPlusTwo(IRemoteClient client, int quantity) throws RemoteException {
+		//Faire piocher 2*quantity cartes		
 	}
 
 	@Override

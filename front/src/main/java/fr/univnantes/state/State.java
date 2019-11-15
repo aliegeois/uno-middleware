@@ -28,6 +28,7 @@ class State {
 	void counterSkip(Game game, ACard card) throws StateException {throw new StateException();}
 	void getPlusTwoed(Game game, int quantity) throws StateException {throw new StateException();}
 	void counterPlusTwo(Game game, ACard card, int quantity) throws StateException {throw new StateException();}
+	void doNotCounterPlusTwo(Game game, int quantity) throws StateException{throw new StateException();}
 
 	void cardPlayedBySomeoneElse(Game game, IRemoteClient client, ACard card) throws StateException {throw new StateException();}
 
