@@ -21,7 +21,7 @@ class PlayState extends State {
 
 	@Override
 	void draw(Game game, List<ACard> cards) {
-		try { game.draw(cards); } catch(StateException e) {}
+		game.cards.addAll(cards);
 		// Ne pas changer d'état
 	}
 }

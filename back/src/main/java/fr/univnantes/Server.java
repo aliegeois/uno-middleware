@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 import java.rmi.Naming;
@@ -20,8 +21,9 @@ public class Server extends UnicastRemoteObject implements IServer {
 	private Map<IRemoteClient, Boolean> ready = new HashMap<>();
 
 	private List<ACard> deck = new ArrayList<ACard>();
+	private Stack<ACard> playedCards = new Stack<ACard>();
 	private List<IRemoteClient> players = new ArrayList<>();
-	private ACard pileCard;
+	//private ACard pileCard;
 	private boolean clockwise = true;
 
 	public Server() throws Exception {
@@ -95,13 +97,13 @@ public class Server extends UnicastRemoteObject implements IServer {
 			}
 		}
 
-		this.pileCard = deck.get(0);
+		this.playedCards.push(deck.get(0));
 		deck.remove(0);
 
 		for(int i = 0; i < players.size(); i++) {
 			try {
 				players.get(i).setCards(cards.get(i));
-				players.get(i).startGame(players.size(), cards.get(i), pileCard);
+				players.get(i).startGame(players.size(), cards.get(i), playedCards.peek());
 			} catch(RemoteException e) {
 				e.printStackTrace();
 			}
@@ -113,28 +115,25 @@ public class Server extends UnicastRemoteObject implements IServer {
 		long playableCards = contestedClient.getCards().stream()
 		.filter(card -> card instanceof EffectCard ? (((EffectCard)card).effect != Effect.Wild) && (((EffectCard)card).effect != Effect.PlusFour) : true) // On récupères toutes les cartes sauf wild et plusfour
 		.filter(card -> {
-			boolean condition = card.color == pileCard.color;
+			boolean condition = card.color == playedCards.peek().color;
 			if(card instanceof NumberCard) {
-				condition |= ((NumberCard)card).value == ((NumberCard)pileCard).value;
+				condition |= ((NumberCard)card).value == ((NumberCard)playedCards.peek()).value;
 			} else if(card instanceof EffectCard) { // Selon les règles, pas besoin de vérifer les wilds
-				condition |= ((EffectCard)card).effect == ((EffectCard)pileCard).effect;
+				condition |= ((EffectCard)card).effect == ((EffectCard)playedCards.peek()).effect;
 			}
 			return condition; // On récupère toutes les cartes qui sont possiblement jouables
 		}).count();
 		if(playableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
-			// Choisir les 4 cartes à piocher
-			// Dire à contestingClient qu'il pioche ces cartes
+			draw(contestingClient, 6);
 		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
 			contestingClient.winContest();
-			// Choisir les cartes à piocher pour contestedClient
-			// Les lui faire piocher;
+			draw(contestedClient, 4);
 		}
 	}
 
 	@Override
 	public void doNotContest(IRemoteClient client) throws RemoteException {
-		// Définir liste des cartes à piocher
-		// Faire piocher au client 4 cartes
+		draw(client, 4);
 		nextClient(client).yourTurn();
 	}
 
@@ -146,7 +145,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public void doNotCounterPlusTwo(IRemoteClient client, int quantity) throws RemoteException {
-		//Faire piocher 2*quantity cartes		
+		draw(client, 2*quantity);
 	}
 
 	@Override
@@ -194,11 +193,38 @@ public class Server extends UnicastRemoteObject implements IServer {
 	}
 
 	private void sendCardPlayed(IRemoteClient client, ACard card) {
-		pileCard = card;
+		playedCards.push(card);
 
 		players.stream().filter(player -> player != client).forEach(player -> {
 			try { player.cardPlayedBySomeoneElse(client, card); } catch(RemoteException e) {}
 		});
+	}
+
+	private void draw(IRemoteClient client, int nbCards){
+
+		ArrayList<ACard> cardsDrawn = new ArrayList<ACard>();
+		int firstStep = Math.min(nbCards, deck.size());
+
+		for(int i = 0; i < firstStep; i++){
+			cardsDrawn.add(deck.get(deck.size()));
+		}
+
+		if(nbCards != firstStep){
+			ACard lastCard = playedCards.pop();
+			deck.addAll(playedCards);
+			playedCards.clear();
+			playedCards.push(lastCard);
+			
+			for(int i = 0; i < nbCards - firstStep; i++){
+				cardsDrawn.add(deck.get(deck.size()));
+			}
+		}
+		try {
+			client.draw(cardsDrawn);
+		} catch (Exception e) {
+			//TODO: handle exception
+		}
+		
 	}
 
 	public static void main(String[] args) {
