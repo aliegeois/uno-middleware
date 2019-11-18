@@ -124,16 +124,17 @@ public class Server extends UnicastRemoteObject implements IServer {
 			return condition; // On récupère toutes les cartes qui sont possiblement jouables
 		}).count();
 		if(playableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
-			draw(contestingClient, 6);
+			contestedClient.winContest();
+			contestingClient.loseContest(cardsToDraw(6));
 		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
 			contestingClient.winContest();
-			draw(contestedClient, 4);
+			contestedClient.loseContest(cardsToDraw(4));
 		}
 	}
 
 	@Override
 	public void doNotContest(IRemoteClient client) throws RemoteException {
-		draw(client, 4);
+		client.draw(cardsToDraw(4));
 		nextClient(client).yourTurn();
 	}
 
@@ -145,7 +146,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public void doNotCounterPlusTwo(IRemoteClient client, int quantity) throws RemoteException {
-		draw(client, 2*quantity);
+		client.draw(cardsToDraw(2 * quantity));
 	}
 
 	@Override
@@ -179,6 +180,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 				case PlusFour:
 					nextClient(client).aboutToDrawFourCards();
+					// client.méthode pour dire qu'on va possiblement se faire contest()
 					break;
 
 				default:
@@ -200,31 +202,24 @@ public class Server extends UnicastRemoteObject implements IServer {
 		});
 	}
 
-	private void draw(IRemoteClient client, int nbCards){
-
-		ArrayList<ACard> cardsDrawn = new ArrayList<ACard>();
+	private List<ACard> cardsToDraw(int nbCards) {
+		ArrayList<ACard> cardsDrawn = new ArrayList<>();
 		int firstStep = Math.min(nbCards, deck.size());
 
-		for(int i = 0; i < firstStep; i++){
+		for(int i = 0; i < firstStep; i++)
 			cardsDrawn.add(deck.get(deck.size()));
-		}
 
-		if(nbCards != firstStep){
+		if(nbCards != firstStep) {
 			ACard lastCard = playedCards.pop();
 			deck.addAll(playedCards);
 			playedCards.clear();
 			playedCards.push(lastCard);
 			
-			for(int i = 0; i < nbCards - firstStep; i++){
+			for(int i = 0; i < nbCards - firstStep; i++)
 				cardsDrawn.add(deck.get(deck.size()));
-			}
 		}
-		try {
-			client.draw(cardsDrawn);
-		} catch (Exception e) {
-			//TODO: handle exception
-		}
-		
+
+		return cardsDrawn;
 	}
 
 	public static void main(String[] args) {

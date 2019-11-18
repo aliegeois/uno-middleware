@@ -13,6 +13,13 @@ class PlayState extends State {
 	}
 
 	@Override
+	void playPlusFourCard(Game game, EffectCard card, Color color) {
+		card.color = color;
+		try { game.server.playCard(game.client, card); } catch(RemoteException e) {}
+		game.setState(newState);
+	}
+
+	@Override
 	void playWildCard(Game game, ACard card, Color color) {
 		card.color = color;
 		try { game.server.playCard(game.client, card); } catch(RemoteException e) {}

@@ -4,11 +4,11 @@ import java.rmi.RemoteException;
 
 import fr.univnantes.IRemoteClient;
 
-class ContestState extends State {
+class WillGetContested extends State {
 	@Override
 	void contest(Game game, IRemoteClient contestedClient) {
 		try { game.server.contest(game.client, contestedClient); } catch(RemoteException e) {}
-		game.setState(new WaitingState());
+		game.setState(new WantToContest());
 	}
 
 	@Override
