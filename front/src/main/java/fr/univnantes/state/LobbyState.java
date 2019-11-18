@@ -12,7 +12,9 @@ class LobbyState extends State {
 	}
 
 	void setReady(Game game, boolean ready) {
-		try { game.server.setReady(game.client, ready); } catch(RemoteException e) {}
+		try {
+			game.server.setReady(game.client, ready);
+		} catch(RemoteException e) {}
 	}
 
 	@Override

@@ -18,12 +18,12 @@ class WaitingState extends State {
 
 	@Override
 	void aboutToDrawFourCards(Game game) {
-		game.setState(new WillGetContested());
+		game.setState(new WillGetContestedState());
 	}
 
 	@Override
 	void getContested(Game game) {
-		game.setState(new WillGetContested());
+		game.setState(new WillGetContestedState());
 	}
 
 	@Override

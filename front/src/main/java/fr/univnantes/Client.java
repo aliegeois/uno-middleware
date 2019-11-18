@@ -138,20 +138,31 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void doNotContest() {
+	public void doNotContest(IRemoteClient contestedClient) {
 		try {
-			game.doNotContest();
+			game.doNotContest(contestedClient);
 		} catch(StateException e) {}
 	}
 	
 	@Override
 	public void playStandardCard(ACard card) {
-		
+		try {
+			game.playStandardCard(card);
+		} catch(StateException e) {}
+	}
+
+	@Override
+	public void playPlusFourCard(ACard card, Color color) {
+		try {
+			game.playPlusFourCard(card, color);
+		} catch(StateException e) {}
 	}
 	
 	@Override
 	public void playWildCard(ACard card, Color color) {
-
+		try {
+			game.playWildCard(card, color);
+		} catch(StateException e) {}
 	}
 
 	@Override
@@ -162,6 +173,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	@Override
 	public void setCards(List<ACard> cards) throws RemoteException {
 		// set cards
+		
 	}
 
 	@Override

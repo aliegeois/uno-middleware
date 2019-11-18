@@ -73,6 +73,10 @@ public class Game {
 		state.playStandardCard(this, card);
 	}
 
+	public void playPlusFourCard(ACard card, Color color) throws StateException {
+		state.playPlusFourCard(this, card, color);
+	}
+
 	public void playWildCard(ACard card, Color color) throws StateException {
 		state.playWildCard(this, card, color);
 	}
@@ -90,8 +94,8 @@ public class Game {
 		state.contest(this, contestedClient);
 	}
 
-	public void doNotContest() throws StateException {
-		state.doNotContest(this);
+	public void doNotContest(IRemoteClient contestedClient) throws StateException {
+		state.doNotContest(this, contestedClient);
 	}
 
 	public void winContest() throws StateException {

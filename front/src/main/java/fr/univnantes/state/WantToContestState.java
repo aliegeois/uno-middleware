@@ -4,7 +4,7 @@ import java.util.List;
 
 import fr.univnantes.cards.ACard;
 
-class WantToContest extends State {
+class WantToContestState extends State {
 	@Override
 	void winContest(Game game) {
 		game.setState(new WaitingState());

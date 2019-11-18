@@ -227,7 +227,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 			new Server();
 			System.out.println("Server started");
 		} catch(Exception e) {
-			System.err.println("Exception: " + e.toString());
+			System.err.println(e.toString());
 			e.printStackTrace();
 		}
 	}
