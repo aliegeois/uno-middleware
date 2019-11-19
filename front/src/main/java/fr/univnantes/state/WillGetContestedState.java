@@ -11,8 +11,10 @@ class WillGetContestedState extends State {
 	void contest(Game game, IRemoteClient contestedClient) {
 		try {
 			List<ACard> cardsToDraw = game.server.contest(game.client, contestedClient);
-			if(cardsToDraw.size() != 0)
+			if(cardsToDraw.size() != 0) {
+				game.client.ui.draw(cardsToDraw);
 				game.cards.addAll(cardsToDraw);
+			}
 		} catch(RemoteException e) {}
 		game.setState(new WaitingState());
 	}

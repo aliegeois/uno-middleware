@@ -1,7 +1,6 @@
 package fr.univnantes.state;
 
 import java.rmi.RemoteException;
-import java.util.List;
 
 import fr.univnantes.cards.ACard;
 import fr.univnantes.cards.Color;
@@ -33,9 +32,9 @@ class PlayState extends State {
 		game.setState(new WaitingState());
 	}
 
-	@Override
+	/*@Override
 	void draw(Game game, List<ACard> cards) {
 		game.cards.addAll(cards);
 		// Ne pas changer d'état
-	}
+	}*/
 }

@@ -15,6 +15,7 @@ public interface IUserInterface {
 	public void draw(List<ACard> cards);
 
 	public void aboutToDrawFourCards();
+	public void willGetContested();
 	// public void contest();
 	// public void doNotContest();
 	public void winContest();

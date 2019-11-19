@@ -13,6 +13,7 @@ class WaitingState extends State {
 
 	@Override
 	void draw(Game game, List<ACard> cards) {
+		game.cards.addAll(cards);
 		// Rester dans le même état
 	}
 
@@ -33,7 +34,6 @@ class WaitingState extends State {
 
 	@Override
 	void getPlusTwoed(Game game, int quantity) {
-		
 		game.setState(new CounterPlusTwoState());
 	}
 

@@ -1,7 +1,6 @@
 package fr.univnantes.state;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +33,6 @@ public class Game {
 
 	public List<ACard> getCards() {
 		return cards;
-	}
-
-	void addCards(Collection<ACard> cards) {
-		System.out.println("Nouvelles cartes:");
-		for(ACard card : cards)
-			System.out.println(card);
-
-		this.cards.addAll(cards);
 	}
 
 

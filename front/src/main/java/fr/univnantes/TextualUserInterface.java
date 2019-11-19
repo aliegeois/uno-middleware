@@ -95,7 +95,6 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void yourTurn() {
-		// TODO Auto-generated method stub
 		System.out.println("À votre tour de jouer, liste de vos cartes: ");
 		System.out.println(cardsToText(cards));
 		
@@ -155,6 +154,12 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void aboutToDrawFourCards() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void willGetContested() {
 		// TODO Auto-generated method stub
 
 	}
