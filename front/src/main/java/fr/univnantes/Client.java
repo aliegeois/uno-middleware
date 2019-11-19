@@ -13,19 +13,19 @@ import fr.univnantes.state.StateException;
 public class Client extends UnicastRemoteObject implements ILocalClient, IRemoteClient {
 	private static final long serialVersionUID = 2501464824644144715L;
 
-	private final String name;
-	private final IUserInterface gui;
-	private final Game game;
-	private final IServer server;
+	public final String name;
+	public final IUserInterface ui;
+	final Game game;
+	final IServer server;
 	// private Collection<ICard> cards;
 
 	private boolean palying = false;
 
-	public Client(String name, IUserInterface gui) throws RemoteException {
+	public Client(String name, IUserInterface ui) throws RemoteException {
 		super();
 
 		this.name = name;
-		this.gui = gui;
+		this.ui = ui;
 
 		IServer s = null;
 
@@ -44,11 +44,8 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws RemoteException {
 		try {
 			game.startGame(nbPlayers, initialCards, pileCard);
-			gui.startGame(initialCards);
-		} catch(StateException e) {
-			
-		}
-		
+			ui.startGame(initialCards);
+		} catch(StateException e) {}
 	}
 
 	@Override
@@ -56,7 +53,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.yourTurn();
 		} catch(StateException e) {}
-		gui.yourTurn();
+		ui.yourTurn();
 	}
 
 	@Override
@@ -64,7 +61,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.draw(cards);
 		} catch(StateException e) {}
-		gui.draw(cards);
+		ui.draw(cards);
 	}
 
 	@Override
@@ -72,7 +69,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.aboutToDrawFourCards();
 		} catch(StateException e) {}
-		gui.aboutToDrawFourCards();
+		ui.aboutToDrawFourCards();
 	}
 
 	@Override
@@ -80,7 +77,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.winContest();
 		} catch(StateException e) {}
-		gui.winContest();
+		ui.winContest();
 	}
 
 	@Override
@@ -88,7 +85,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.loseContest(cards);
 		} catch(StateException e) {}
-		gui.loseContest(cards);
+		ui.loseContest(cards);
 	}
 
 	@Override
@@ -96,7 +93,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.getContested();
 		} catch(StateException e) {}
-		gui.getContested();
+		ui.getContested();
 	}
 
 	@Override
@@ -104,7 +101,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.getSkipped();
 		} catch(StateException e) {}
-		gui.getSkipped();
+		ui.getSkipped();
 	}
 
 	@Override
@@ -112,7 +109,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.getPlusTwoed(quantity);
 		} catch(StateException e) {}
-		gui.getPlusTwoed(quantity);
+		ui.getPlusTwoed(quantity);
 	}
 
 	@Override
@@ -120,7 +117,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.cardPlayedBySomeoneElse(client, card);
 		} catch(StateException e) {}
-		gui.cardPlayedBySomeoneElse(client, card);
+		ui.cardPlayedBySomeoneElse(client, card);
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import fr.univnantes.cards.ACard;
-import fr.univnantes.cards.Color;
 
 public interface IRemoteClient {
 	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws RemoteException;
@@ -22,10 +21,4 @@ public interface IRemoteClient {
 	public List<ACard> getCards() throws RemoteException;
 	public String getName() throws RemoteException;
 	public boolean isPlaying() throws RemoteException;
-
-	public void setReady(boolean ready) throws RemoteException;
-	public void contest() throws RemoteException;
-	public void doNotContest() throws RemoteException;
-	public void playStandardCard(ACard card) throws RemoteException;
-	public void playWildCard(ACard card, Color color) throws RemoteException;
 }

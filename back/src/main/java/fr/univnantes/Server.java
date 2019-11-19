@@ -124,11 +124,9 @@ public class Server extends UnicastRemoteObject implements IServer {
 			return condition; // On récupère toutes les cartes qui sont possiblement jouables
 		}).count();
 		if(playableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
-			// contestingClient.loseContest(cardsToDraw(6));
 			contestedClient.winContest();
 			return cardsToDraw(6);
 		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
-			// contestingClient.winContest();
 			contestedClient.loseContest(cardsToDraw(4));
 			return new ArrayList<>();
 		}
@@ -173,7 +171,12 @@ public class Server extends UnicastRemoteObject implements IServer {
 					break;
 				
 				case PlusTwo:
-					nextClient(client).getPlusTwoed(1);
+					if(nextClient(client).getCards().stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0) {
+						nextClient(client).getPlusTwoed(1);
+					} else {
+						nextClient(client).draw(cardsToDraw(2));
+					}
+					
 					break;
 				
 				case Reverse:
@@ -183,7 +186,6 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 				case PlusFour:
 					nextClient(client).aboutToDrawFourCards();
-					// client.méthode pour dire qu'on va possiblement se faire contest()
 					break;
 
 				default:

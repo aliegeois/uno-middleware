@@ -7,6 +7,10 @@ import fr.univnantes.cards.ACard;
 import fr.univnantes.cards.Color;
 
 class State {
+	State() {
+		System.out.println("new " + this.getClass().getName());
+	}
+
 	void setReady(Game game, boolean ready) throws StateException {throw new StateException();}
 	void joinLobby(Game game, String name) throws StateException {throw new StateException();}
 	void leaveLobby(Game game) throws StateException {throw new StateException();}

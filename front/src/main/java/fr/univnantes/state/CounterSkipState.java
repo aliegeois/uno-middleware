@@ -2,7 +2,7 @@ package fr.univnantes.state;
 
 import java.rmi.RemoteException;
 
-import fr.univnantes.cards.*;
+import fr.univnantes.cards.ACard;
 
 class CounterSkipState extends State {
 	@Override
