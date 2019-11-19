@@ -94,11 +94,6 @@ public class GraphicalUserInterface extends Application implements IUserInterfac
 		
 	}
 
-	@Override
-	public void willGetContested() {
-		
-	}
-
 	public void contest() {
 		
 	}

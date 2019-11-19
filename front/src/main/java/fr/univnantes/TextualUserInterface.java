@@ -145,6 +145,7 @@ public class TextualUserInterface implements IUserInterface {
 			client.playStandardCard(cardToPlay);
 		}
 		this.cards.remove(cardNumber - 1);
+		System.out.println(cardsToText(cards));
 	}
 
 	@Override
@@ -158,12 +159,6 @@ public class TextualUserInterface implements IUserInterface {
 	@Override
 	public void aboutToDrawFourCards() {
 		System.out.println("Vous allez piochez 4 cartes, voulez-vous le contestez ?");
-
-	}
-
-	@Override
-	public void willGetContested() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -203,7 +198,11 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) {
-		System.out.println("..."+"joue: "+ cardToText(card));
+		try {
+			System.out.println(client.getName() + " joue: "+ cardToText(card));	
+		} catch (RemoteException e) {
+			//TODO: handle exception
+		}
 	}
 
 	public static void main(String[] args) {
