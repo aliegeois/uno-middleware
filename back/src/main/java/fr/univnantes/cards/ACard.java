@@ -1,8 +1,12 @@
 package fr.univnantes.cards;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 
-public abstract class ACard {
+public abstract class ACard implements Serializable {
+	private static final long serialVersionUID = -6320387025355652230L;
+
 	private static int lastId = 0;
 	public final int id;
     public final Color color;
@@ -12,7 +16,7 @@ public abstract class ACard {
         this.color = color;
 	}
 
-	public String toJson() throws JSONException {
+	public String toString() throws JSONException {
 		throw new UnsupportedOperationException("Method must be implemented");
 	}
 }

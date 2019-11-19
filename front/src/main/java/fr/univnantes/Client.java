@@ -42,17 +42,22 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 
 	@Override
 	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws RemoteException {
+		System.out.println("Client.startGame");
 		try {
 			game.startGame(nbPlayers, initialCards, pileCard);
-			ui.startGame(nbPlayers, initialCards, pileCard);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
+		ui.startGame(nbPlayers, initialCards, pileCard);
 	}
 
 	@Override
 	public void yourTurn() throws RemoteException {
 		try {
 			game.yourTurn();
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.yourTurn();
 	}
 
@@ -60,7 +65,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void draw(List<ACard> cards) throws RemoteException {
 		try {
 			game.draw(cards);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.draw(cards);
 	}
 
@@ -68,7 +75,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void aboutToDrawFourCards() throws RemoteException {
 		try {
 			game.aboutToDrawFourCards();
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.aboutToDrawFourCards();
 	}
 
@@ -76,7 +85,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void winContest() throws RemoteException {
 		try {
 			game.winContest();
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.winContest();
 	}
 
@@ -84,7 +95,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void loseContest(List<ACard> cards) throws RemoteException {
 		try {
 			game.loseContest(cards);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.loseContest(cards);
 	}
 
@@ -92,7 +105,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void getContested() throws RemoteException {
 		try {
 			game.getContested();
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.getContested();
 	}
 
@@ -100,7 +115,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void getSkipped() throws RemoteException {
 		try {
 			game.getSkipped();
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.getSkipped();
 	}
 
@@ -108,7 +125,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void getPlusTwoed(int quantity) throws RemoteException {
 		try {
 			game.getPlusTwoed(quantity);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.getPlusTwoed(quantity);
 	}
 
@@ -116,50 +135,66 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) throws RemoteException {
 		try {
 			game.cardPlayedBySomeoneElse(client, card);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 		ui.cardPlayedBySomeoneElse(client, card);
 	}
+
+	// ----------
 
 	@Override
 	public void setReady(boolean ready) {
 		try {
 			game.setReady(ready);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void contest(IRemoteClient contestedClient) {
 		try {
 			game.contest(contestedClient);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void doNotContest() {
 		try {
 			game.doNotContest();
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void playStandardCard(ACard card) {
 		try {
 			game.playStandardCard(card);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void playPlusFourCard(ACard card, Color color) {
 		try {
 			game.playPlusFourCard(card, color);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void playWildCard(ACard card, Color color) {
 		try {
 			game.playWildCard(card, color);
-		} catch(StateException e) {}
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

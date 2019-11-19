@@ -17,7 +17,7 @@ public class TextualUserInterface implements IUserInterface {
 	private final List<ACard> cards = new ArrayList<>();
 
 	TextualUserInterface() {
-		System.out.println("Entrez votre nom:");
+		System.out.print("Entrez votre nom : ");
 		String name = console.readLine();
 		ILocalClient _client = null;
 		try {
@@ -105,19 +105,19 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) {
-		System.out.print("Début de la partie, vous êtes " + nbPlayers + " joueurs, voici vos cartes: ");
+		System.out.print("Debut de la partie, vous etes " + nbPlayers + " joueurs, voici vos cartes: ");
 		for(int i = 0; i < initialCards.size(); i++) {
 			System.out.print(cardToText(initialCards.get(i)));
 			if(i != initialCards.size() - 1)
 				System.out.print(" , ");
 		}
 		System.out.println();
-		System.out.println("Carte de départ: " + cardToText(pileCard));
+		System.out.println("Carte du dessus du paquet: " + cardToText(pileCard));
 	}
 
 	@Override
 	public void yourTurn() {
-		System.out.println("À votre tour de jouer, liste de vos cartes: ");
+		System.out.println("A votre tour de jouer, liste de vos cartes: ");
 		System.out.println(cardsToText(cards));
 		
 		int cardNumber;
@@ -205,19 +205,17 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void getSkipped() {
-		//TODO: faire le test sur la possession de carte skip
 		if(cards.stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0){
 			System.out.println("Votre tour va être passé.");
 			System.out.println("Voulez-vous passer le tour du joueur suivant ?");
 		}else{
-			System.out.println("Votre tour est passé.");
+			System.out.println("Votre tour est passe.");
 		}
 
 	}
 
 	@Override
 	public void getPlusTwoed(int nbCards) {
-		//TODO: faire le test sur la possession de carte +2
 		if(cards.stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0){
 			int cardNumber;
 			System.out.println("Vous allez piochez "+ nbCards+ " cartes");
@@ -239,8 +237,8 @@ public class TextualUserInterface implements IUserInterface {
 			this.cards.remove(cardNumber - 1);
 			System.out.println(cardsToText(cards));
 
-		}else{
-			System.out.println("Vous piochez "+ nbCards+" cartes.");
+		} else {
+			System.out.println("Vous piochez " + nbCards + " cartes.");
 			System.out.println(cardsToText(cards));
 		}
 	}
@@ -248,7 +246,7 @@ public class TextualUserInterface implements IUserInterface {
 	@Override
 	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) {
 		try {
-			System.out.println(client.getName() + " joue: "+ cardToText(card));	
+			System.out.println(client.getName() + " joue : "+ cardToText(card));	
 		} catch (RemoteException e) {}
 	}
 

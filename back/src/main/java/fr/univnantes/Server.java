@@ -1,18 +1,22 @@
 package fr.univnantes;
 
-import fr.univnantes.cards.*;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import fr.univnantes.cards.ACard;
+import fr.univnantes.cards.Color;
+import fr.univnantes.cards.Effect;
+import fr.univnantes.cards.EffectCard;
+import fr.univnantes.cards.NumberCard;
 
 public class Server extends UnicastRemoteObject implements IServer {
 	private static final long serialVersionUID = 4419803375268480151L;
@@ -36,7 +40,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	/**
 	 * Initialise le deck
 	 */
-	public void initDeck() {
+	private void initDeck() {
 		for(Color color : Color.values()) {
 			deck.add(new NumberCard(0, color));
 
@@ -58,24 +62,24 @@ public class Server extends UnicastRemoteObject implements IServer {
 		Collections.shuffle(deck);
 	}
 
-	public String test(String s) throws RemoteException {
-		System.out.println("Client dit: " + s);
-		return s;
-	}
-
-	public boolean join(IRemoteClient c) throws RemoteException {
+	@Override
+	public boolean join(IRemoteClient client) throws RemoteException {
 		if(started)
 			return false;
 		
-		System.out.println(c.getName());
-		
-		ready.put(c,false);
+		ready.put(client, false);
+
+		System.out.println(client.getName() + " has joined (" + ready.values().stream().filter(e -> e).count() + " / " + ready.size() + ")");
+
 		return true;
 	}
 
+	@Override
 	public void setReady(IRemoteClient client, boolean isReady) throws RemoteException {
 		ready.put(client, isReady);
-		if(isReady && ready.size() > 2 && ready.size() < 15 && ready.values().stream().filter(e -> e).count() == ready.size()) {
+		System.out.println(client.getName() + " is now" + (isReady ? " " : " not ") + "ready (" + ready.values().stream().filter(e -> e).count() + " / " + ready.size() + ")");
+		if(isReady && ready.size() > 1 && ready.size() < 15 && ready.values().stream().filter(e -> e).count() == ready.size()) {
+			System.out.println("Starting the game");
 			start();
 		}
 	}
@@ -83,31 +87,62 @@ public class Server extends UnicastRemoteObject implements IServer {
 	private void start() {
 		initDeck();
 		players = new ArrayList<>(ready.keySet());
-		List<List<ACard>> cards = new ArrayList<>(); 
+		List<List<ACard>> cards = new ArrayList<>();
 
 		Iterator<ACard> iter = deck.iterator();
 
 		for(int i = 0; i < players.size(); i++) {
+			List<ACard> current = new ArrayList<>();
 			int cardsDistributed = 0;
 			while(iter.hasNext() && cardsDistributed < 6) {
-				ACard current = iter.next();
+				current.add(iter.next());
 				iter.remove();
-				cards.get(i).add(current);
 				cardsDistributed++;
 			}
+			cards.add(current);
 		}
 
-		this.playedCards.push(deck.get(0));
-		deck.remove(0);
+		playedCards.push(deck.remove(0));
 
 		for(int i = 0; i < players.size(); i++) {
+			System.out.println("init p" + i);
 			try {
-				// players.get(i).setCards(cards.get(i));
-				players.get(i).startGame(players.size(), cards.get(i), playedCards.peek());
+				System.out.println("Init deck for " + players.get(i).getName());
+				IRemoteClient playerToStart = players.get(i);
+				System.out.println("got player (" + playerToStart + ")");
+				int param1 = players.size();
+				System.out.println("got size (" + param1 + ")");
+				System.out.println("Trying to get cards (" + i + ")");
+				System.out.println("List size: " + cards.size());
+				cards.stream().forEach(c -> System.out.println("\tsize: " + c.size()));
+				List<ACard> param2 = null;
+				System.out.println("After variable declaration");
+				try {
+					System.out.println("Inside try");
+					param2 = cards.get(i);
+					System.out.println(param2);
+					System.out.println("After get");
+				} catch(Exception e) {
+					System.out.println("Exception, before log");
+					e.printStackTrace();
+					System.out.println("Exception, after log");
+				} finally {
+					System.out.println("Finally");
+				}
+				
+				System.out.print("got card list (");
+				System.out.print(param2);
+				System.out.println(")");
+				ACard param3 = playedCards.peek();
+				System.out.println("got top card (" + param3 + ")");
+				playerToStart.startGame(param1, param2, param3);
+				System.out.println("Deck for " + players.get(i).getName() + " is init");
 			} catch(RemoteException e) {
 				e.printStackTrace();
 			}
 		}
+
+		System.out.println("end start");
 	}
 
 	@Override
@@ -123,6 +158,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 			}
 			return condition; // On récupère toutes les cartes qui sont possiblement jouables
 		}).count();
+
 		if(playableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
 			contestedClient.winContest();
 			return cardsToDraw(6);

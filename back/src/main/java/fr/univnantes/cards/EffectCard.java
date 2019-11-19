@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import fr.univnantes.cards.Effect;
 
 public class EffectCard extends ACard {
+	private static final long serialVersionUID = -1973843047004144289L;
+
     public final Effect effect;
 
     public EffectCard(Effect effect, Color color) {
@@ -14,7 +16,7 @@ public class EffectCard extends ACard {
 	}
 	
 	@Override
-	public String toJson() throws JSONException {
+	public String toString() throws JSONException {
 		JSONObject obj = new JSONObject();
 		obj.put("type", "effect");
 		switch(effect) {

@@ -1,6 +1,8 @@
 package fr.univnantes.cards;
 
 public class NumberCard extends ACard {
+	private static final long serialVersionUID = 1920263878730653339L;
+
     public final int value;
 
     public NumberCard(int id, Color color, int value) {

@@ -1,6 +1,10 @@
 package fr.univnantes.cards;
 
-public abstract class ACard {
+import java.io.Serializable;
+
+public abstract class ACard implements Serializable {
+	private static final long serialVersionUID = -6320387025355652230L;
+	
 	public final int id;
 	public Color color;
 

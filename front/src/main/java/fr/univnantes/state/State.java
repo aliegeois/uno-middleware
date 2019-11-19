@@ -1,5 +1,7 @@
 package fr.univnantes.state;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.List;
 
 import fr.univnantes.IRemoteClient;
@@ -9,6 +11,18 @@ import fr.univnantes.cards.Color;
 class State {
 	State() {
 		System.out.println("new " + this.getClass().getName());
+		System.out.println("Methods list:");
+		for(Method m : getClass().getDeclaredMethods()) {
+			System.out.print(m.getReturnType().getName() + " " + m.getName() + "(");
+			Parameter[] parameters = m.getParameters();
+			for(int i = 0; i < parameters.length; i++) {
+				System.out.print(parameters[i].getType().getName() + " " + parameters[i].getName());
+				if(i != parameters.length - 1)
+					System.out.print(", ");
+			}
+			System.out.println(")");
+		}
+		System.out.println();
 	}
 
 	void setReady(Game game, boolean ready) throws StateException {throw new StateException();}

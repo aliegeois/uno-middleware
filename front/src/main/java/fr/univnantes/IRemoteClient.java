@@ -1,12 +1,13 @@
 package fr.univnantes;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
 import fr.univnantes.cards.ACard;
 
-public interface IRemoteClient extends Remote {
+public interface IRemoteClient extends Remote, Serializable {
 	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws RemoteException;
 	public void yourTurn() throws RemoteException;
 	public void draw(List<ACard> cards) throws RemoteException;

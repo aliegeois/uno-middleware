@@ -53,6 +53,7 @@ public class Game {
 	}
 
 	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws StateException {
+		System.out.println("Game.startGame");
 		state.startGame(this, nbPlayers, initialCards, pileCard);
 	}
 
