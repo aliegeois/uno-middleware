@@ -145,54 +145,60 @@ public class TextualUserInterface implements IUserInterface {
 		} else {
 			client.playStandardCard(cardToPlay);
 		}
+		this.cards.remove(cardNumber - 1);
 	}
 
 	@Override
 	public void draw(List<ACard> cards) {
-		// TODO Auto-generated method stub
+		System.out.println("Vous piochez"+ cards.size() + " cartes.");
+		this.cards.addAll(cards);
+		System.out.println(cardsToText(cards));
 
 	}
 
 	@Override
 	public void aboutToDrawFourCards() {
-		// TODO Auto-generated method stub
+		System.out.println("Vous allez piochez 4 cartes, voulez-vous le contestez ?");
 
 	}
 
 	@Override
 	public void winContest() {
-		// TODO Auto-generated method stub
+		System.out.println("Vous avez gagnez le conteste.");
 
 	}
 
 	@Override
 	public void loseContest(List<ACard> cards) {
-		// TODO Auto-generated method stub
-
+		System.out.println("Dans le cul, Lulu !");
+		this.cards.addAll(cards);
+		System.out.println(cardsToText(cards));
 	}
 
 	@Override
 	public void getContested() {
-		// TODO Auto-generated method stub
+		System.out.println("Un joueur conteste votre +4.");
 
 	}
 
 	@Override
 	public void getSkipped() {
-		// TODO Auto-generated method stub
+		//TODO: faire le test sur la possession de carte skip
+		System.out.println("Vous allez être skipped ?");
+		System.out.println("Voulez-vous skip le joueur suivant ?");
 
 	}
 
 	@Override
-	public void getPlusTwoed() {
-		// TODO Auto-generated method stub
-
+	public void getPlusTwoed(int nbCards) {
+		//TODO: faire le test sur la possession de carte +2
+		System.out.println("Vous allez piochez "+ nbCards+ " cartes");
+		System.out.println("Voulez-vous stack +2 ?");
 	}
 
 	@Override
 	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) {
-		// TODO Auto-generated method stub
-
+		System.out.println("..."+"joue: "+ cardToText(card));
 	}
 
 	public static void main(String[] args) {

@@ -23,7 +23,7 @@ public interface IUserInterface {
 
 	public void getSkipped();
 	// public void counterSkip(ACard card);
-	public void getPlusTwoed();
+	public void getPlusTwoed(int nbCards);
 	// public void counterPlusTwo(ACard card);
 
 	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card);

@@ -112,7 +112,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		try {
 			game.getPlusTwoed(quantity);
 		} catch(StateException e) {}
-		gui.getPlusTwoed();
+		gui.getPlusTwoed(quantity);
 	}
 
 	@Override

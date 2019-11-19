@@ -128,7 +128,7 @@ public class GraphicalUserInterface extends Application implements IUserInterfac
 	}
 
 	@Override
-	public void getPlusTwoed() {
+	public void getPlusTwoed(int quantity) {
 		
 	}
 
