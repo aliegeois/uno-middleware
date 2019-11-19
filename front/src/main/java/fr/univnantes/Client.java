@@ -44,7 +44,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws RemoteException {
 		try {
 			game.startGame(nbPlayers, initialCards, pileCard);
-			ui.startGame(initialCards);
+			ui.startGame(nbPlayers, initialCards, pileCard);
 		} catch(StateException e) {}
 	}
 

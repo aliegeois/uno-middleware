@@ -66,7 +66,7 @@ public class GraphicalUserInterface extends Application implements IUserInterfac
 	}
 
 	@Override
-	public void startGame(List<ACard> initialCards) {
+	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) {
 
 	}
 
@@ -91,11 +91,6 @@ public class GraphicalUserInterface extends Application implements IUserInterfac
 
 	@Override
 	public void aboutToDrawFourCards() {
-		
-	}
-
-	@Override
-	public void willGetContested() {
 		
 	}
 

@@ -28,7 +28,7 @@ public class Game {
 		this.client = client;
 		this.server = server;
 
-		state = new InitialState();
+		state = new LobbyState();
 	}
 
 	public List<ACard> getCards() {

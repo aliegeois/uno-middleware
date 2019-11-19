@@ -22,11 +22,15 @@ public class TextualUserInterface implements IUserInterface {
 		ILocalClient _client = null;
 		try {
 			_client = new Client(name, this);
-		} catch (RemoteException e) {}
+		} catch (RemoteException e) {
+			// System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
 		client = _client;
 
-		if (_client == null)
-			return;
+		if(client != null) {
+			client.setReady(true);
+		}
 	}
 
 	private static String cardToText(ACard card) {
@@ -74,7 +78,7 @@ public class TextualUserInterface implements IUserInterface {
 	private static String cardsToText(List<ACard> cards) {
 		String value = "{ ";
 		for(int i = 0; i < cards.size(); i++) {
-			value += "(" + (i+1) + ") " + cardToText(cards.get(i));
+			value += "(" + (i+1) + ")" + cardToText(cards.get(i));
 			if(i != cards.size() - 1)
 				value += " - ";
 		}
@@ -82,15 +86,33 @@ public class TextualUserInterface implements IUserInterface {
 		return value + " }";
 	}
 
+	// @Override
+	// public void clientReady() {
+	// 	System.out.println("Entrée dans le lobby");
+	// 	boolean ready = false;
+	// 	do {
+	// 		System.out.println("Entrez \"ready\" quand vous êtes prêt");
+	// 		String input = console.readLine();
+	// 		if("ready".equals(input)) {
+	// 			ready = true;
+	// 		} else {
+	// 			System.out.println("Incorrect");
+	// 		}
+	// 	} while(!ready);
+
+	// 	client.setReady(true);
+	// }
+
 	@Override
-	public void startGame(List<ACard> initialCards) {
-		System.out.print("Début de la partie, voici vos cartes: ");
+	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) {
+		System.out.print("Début de la partie, vous êtes " + nbPlayers + " joueurs, voici vos cartes: ");
 		for(int i = 0; i < initialCards.size(); i++) {
 			System.out.print(cardToText(initialCards.get(i)));
 			if(i != initialCards.size() - 1)
 				System.out.print(" , ");
 		}
 		System.out.println();
+		System.out.println("Carte de départ: " + cardToText(pileCard));
 	}
 
 	@Override
@@ -162,12 +184,6 @@ public class TextualUserInterface implements IUserInterface {
 	}
 
 	@Override
-	public void willGetContested() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void winContest() {
 		System.out.println("Vous avez gagnez le conteste.");
 
@@ -207,12 +223,6 @@ public class TextualUserInterface implements IUserInterface {
 	}
 
 	public static void main(String[] args) {
-		TextualUserInterface TUI = new TextualUserInterface();
-		TUI.cards.add(new NumberCard(0, Color.Blue, 7));
-		TUI.cards.add(new EffectCard(2, Color.Red, Effect.PlusTwo));
-		TUI.cards.add(new EffectCard(1, Color.Green, Effect.Skip));
-		TUI.cards.add(new EffectCard(1, Color.Wild, Effect.Wild));
-		TUI.cards.add(new NumberCard(3, Color.Yellow, 7));
-		TUI.yourTurn();
+		new TextualUserInterface();
 	}
 }

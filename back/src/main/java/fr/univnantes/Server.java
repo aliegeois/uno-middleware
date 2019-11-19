@@ -102,7 +102,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 		for(int i = 0; i < players.size(); i++) {
 			try {
-				players.get(i).setCards(cards.get(i));
+				// players.get(i).setCards(cards.get(i));
 				players.get(i).startGame(players.size(), cards.get(i), playedCards.peek());
 			} catch(RemoteException e) {
 				e.printStackTrace();
