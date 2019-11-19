@@ -184,25 +184,50 @@ public class TextualUserInterface implements IUserInterface {
 	@Override
 	public void getSkipped() {
 		//TODO: faire le test sur la possession de carte skip
-		System.out.println("Vous allez être skipped ?");
-		System.out.println("Voulez-vous skip le joueur suivant ?");
+		if(cards.stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0){
+			System.out.println("Votre tour va être passé.");
+			System.out.println("Voulez-vous passer le tour du joueur suivant ?");
+		}else{
+			System.out.println("Votre tour est passé.");
+		}
 
 	}
 
 	@Override
 	public void getPlusTwoed(int nbCards) {
 		//TODO: faire le test sur la possession de carte +2
-		System.out.println("Vous allez piochez "+ nbCards+ " cartes");
-		System.out.println("Voulez-vous stack +2 ?");
+		if(cards.stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0){
+			int cardNumber;
+			System.out.println("Vous allez piochez "+ nbCards+ " cartes");
+			do {
+				System.out.println("Entrez le numero de la carte:");
+				String input = console.readLine();
+				try {
+					cardNumber = Integer.parseInt(input);
+					if(cardNumber < 1 || cardNumber > cards.size()|| !((cards.get(cardNumber) instanceof EffectCard) && ((EffectCard)cards.get(cardNumber)).effect == Effect.PlusTwo)) 
+						throw new NumberFormatException();
+				} catch(NumberFormatException e) {
+					System.out.println("Nombre incorrect");
+					cardNumber = -1;
+				}
+			} while(cardNumber!=-1);
+
+			ACard cardToPlay = cards.get(cardNumber -1);
+			client.playStandardCard(cardToPlay);
+			this.cards.remove(cardNumber - 1);
+			System.out.println(cardsToText(cards));
+
+		}else{
+			System.out.println("Vous piochez "+ nbCards+" cartes.");
+			System.out.println(cardsToText(cards));
+		}
 	}
 
 	@Override
 	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) {
 		try {
 			System.out.println(client.getName() + " joue: "+ cardToText(card));	
-		} catch (RemoteException e) {
-			//TODO: handle exception
-		}
+		} catch (RemoteException e) {}
 	}
 
 	public static void main(String[] args) {
