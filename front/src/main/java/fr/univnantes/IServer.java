@@ -12,7 +12,7 @@ public interface IServer extends Remote {
 	public void setReady(IRemoteClient client, boolean ready) throws RemoteException;
 
 	public List<ACard> contest(IRemoteClient contestingClient, IRemoteClient contestedClient) throws RemoteException;
-	public List<ACard> doNotContest(IRemoteClient contestingClient, IRemoteClient contestedClient) throws RemoteException;
+	public List<ACard> doNotContest(IRemoteClient clientlient) throws RemoteException;
 	public void counterPlusTwo(IRemoteClient client, ACard card, int quantity) throws RemoteException;
 	public void doNotCounterPlusTwo(IRemoteClient client, int quantity) throws RemoteException;
 	public void counterSkip(IRemoteClient client, ACard card) throws RemoteException;

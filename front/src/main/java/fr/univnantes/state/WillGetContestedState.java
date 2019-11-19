@@ -18,9 +18,9 @@ class WillGetContestedState extends State {
 	}
 
 	@Override
-	void doNotContest(Game game, IRemoteClient contestedClient) {
+	void doNotContest(Game game) {
 		try {
-			game.cards.addAll(game.server.doNotContest(game.client, contestedClient));
+			game.cards.addAll(game.server.doNotContest(game.client));
 		} catch(RemoteException e) {}
 		game.setState(new WaitingState());
 	}

@@ -4,7 +4,7 @@ import java.util.List;
 
 import fr.univnantes.cards.ACard;
 
-public interface IGUI {
+public interface IUserInterface {
 	// public void joinLobby();
 	// public void leaveLobby();
 	public void startGame(List<ACard> initialCards);

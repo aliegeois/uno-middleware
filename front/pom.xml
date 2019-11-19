@@ -47,7 +47,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>fr.univnantes.GUI</mainClass>
+							<mainClass>fr.univnantes.TextualUserInterface</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -57,7 +57,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.4.0</version>
 				<configuration>
-					<mainClass>fr.univnantes.GUI</mainClass>
+					<mainClass>fr.univnantes.TextualUserInterface</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -14,14 +14,14 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	private static final long serialVersionUID = 2501464824644144715L;
 
 	private final String name;
-	private final IGUI gui;
+	private final IUserInterface gui;
 	private final Game game;
 	private final IServer server;
 	// private Collection<ICard> cards;
 
 	private boolean palying = false;
 
-	public Client(String name, IGUI gui) throws RemoteException {
+	public Client(String name, IUserInterface gui) throws RemoteException {
 		super();
 
 		this.name = name;
@@ -138,9 +138,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void doNotContest(IRemoteClient contestedClient) {
+	public void doNotContest() {
 		try {
-			game.doNotContest(contestedClient);
+			game.doNotContest();
 		} catch(StateException e) {}
 	}
 	

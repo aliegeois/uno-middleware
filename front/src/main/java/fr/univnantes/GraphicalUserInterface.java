@@ -14,12 +14,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class GUI extends Application implements IGUI {
+public class GraphicalUserInterface extends Application implements IUserInterface {
 	private Stage stage;
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		GUI gui = this;
+		GraphicalUserInterface gui = this;
 
 		this.stage = stage;
 

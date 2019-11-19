@@ -94,8 +94,8 @@ public class Game {
 		state.contest(this, contestedClient);
 	}
 
-	public void doNotContest(IRemoteClient contestedClient) throws StateException {
-		state.doNotContest(this, contestedClient);
+	public void doNotContest() throws StateException {
+		state.doNotContest(this);
 	}
 
 	public void winContest() throws StateException {

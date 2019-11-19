@@ -111,7 +111,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	}
 
 	@Override
-	public void contest(IRemoteClient contestingClient, IRemoteClient contestedClient) throws RemoteException {
+	public List<ACard> contest(IRemoteClient contestingClient, IRemoteClient contestedClient) throws RemoteException {
 		long playableCards = contestedClient.getCards().stream()
 		.filter(card -> card instanceof EffectCard ? (((EffectCard)card).effect != Effect.Wild) && (((EffectCard)card).effect != Effect.PlusFour) : true) // On récupères toutes les cartes sauf wild et plusfour
 		.filter(card -> {
@@ -124,18 +124,21 @@ public class Server extends UnicastRemoteObject implements IServer {
 			return condition; // On récupère toutes les cartes qui sont possiblement jouables
 		}).count();
 		if(playableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
+			// contestingClient.loseContest(cardsToDraw(6));
 			contestedClient.winContest();
-			contestingClient.loseContest(cardsToDraw(6));
+			return cardsToDraw(6);
 		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
-			contestingClient.winContest();
+			// contestingClient.winContest();
 			contestedClient.loseContest(cardsToDraw(4));
+			return new ArrayList<>();
 		}
 	}
 
 	@Override
-	public void doNotContest(IRemoteClient client) throws RemoteException {
-		client.draw(cardsToDraw(4));
+	public List<ACard> doNotContest(IRemoteClient client) throws RemoteException {
+		// client.draw(cardsToDraw(4));
 		nextClient(client).yourTurn();
+		return cardsToDraw(4);
 	}
 
 	@Override
