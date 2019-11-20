@@ -1,10 +1,5 @@
 package fr.univnantes.cards;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import fr.univnantes.cards.Effect;
-
 public class EffectCard extends ACard {
 	private static final long serialVersionUID = -1973843047004144289L;
 
@@ -15,7 +10,7 @@ public class EffectCard extends ACard {
         this.effect = effect;
 	}
 	
-	@Override
+	/*@Override
 	public String toString() throws JSONException {
 		JSONObject obj = new JSONObject();
 		obj.put("type", "effect");
@@ -32,5 +27,5 @@ public class EffectCard extends ACard {
 				obj.put("effect", "plusFour");
 		}
 		return obj.toString();
-	}
+	}*/
 }

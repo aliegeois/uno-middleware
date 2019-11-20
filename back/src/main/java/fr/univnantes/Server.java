@@ -41,7 +41,8 @@ public class Server extends UnicastRemoteObject implements IServer {
 	 * Initialise le deck
 	 */
 	private void initDeck() {
-		for(Color color : Color.values()) {
+		Color[] usableColors = { Color.Red, Color.Blue, Color.Green, Color.Yellow };
+		for(Color color : usableColors) {
 			deck.add(new NumberCard(0, color));
 
 			for(int i = 1; i <= 2; i++) {
@@ -55,8 +56,8 @@ public class Server extends UnicastRemoteObject implements IServer {
 		}
 
 		for(int j = 1; j <= 4; j++) {
-			deck.add(new EffectCard(Effect.Wild, null));
-			deck.add(new EffectCard(Effect.PlusFour, null));
+			deck.add(new EffectCard(Effect.Wild, Color.Wild));
+			deck.add(new EffectCard(Effect.PlusFour, Color.Wild));
 		}
 
 		Collections.shuffle(deck);
@@ -105,44 +106,18 @@ public class Server extends UnicastRemoteObject implements IServer {
 		playedCards.push(deck.remove(0));
 
 		for(int i = 0; i < players.size(); i++) {
-			System.out.println("init p" + i);
 			try {
-				System.out.println("Init deck for " + players.get(i).getName());
-				IRemoteClient playerToStart = players.get(i);
-				System.out.println("got player (" + playerToStart + ")");
-				int param1 = players.size();
-				System.out.println("got size (" + param1 + ")");
-				System.out.println("Trying to get cards (" + i + ")");
-				System.out.println("List size: " + cards.size());
-				cards.stream().forEach(c -> System.out.println("\tsize: " + c.size()));
-				List<ACard> param2 = null;
-				System.out.println("After variable declaration");
-				try {
-					System.out.println("Inside try");
-					param2 = cards.get(i);
-					System.out.println(param2);
-					System.out.println("After get");
-				} catch(Exception e) {
-					System.out.println("Exception, before log");
-					e.printStackTrace();
-					System.out.println("Exception, after log");
-				} finally {
-					System.out.println("Finally");
-				}
-				
-				System.out.print("got card list (");
-				System.out.print(param2);
-				System.out.println(")");
-				ACard param3 = playedCards.peek();
-				System.out.println("got top card (" + param3 + ")");
-				playerToStart.startGame(param1, param2, param3);
-				System.out.println("Deck for " + players.get(i).getName() + " is init");
+				players.get(i).startGame(players.size(), cards.get(i), playedCards.peek());
 			} catch(RemoteException e) {
 				e.printStackTrace();
 			}
 		}
 
-		System.out.println("end start");
+		try {
+			players.get(0).yourTurn();
+		} catch(RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
