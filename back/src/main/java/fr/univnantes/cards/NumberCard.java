@@ -15,11 +15,12 @@ public class NumberCard extends ACard {
 		if(otherCard == null)
 			return false;
 		
-		if(otherCard instanceof NumberCard) {
-			return color == otherCard.color || value == ((NumberCard) otherCard).value;
-		} else {
-			return color == otherCard.color;
-		}
+		boolean playable = super.canBePlayedOn(otherCard);
+		
+		if(otherCard instanceof NumberCard)
+			playable |= value == ((NumberCard) otherCard).value;
+		
+		return playable;
 	}
 	
 	@Override

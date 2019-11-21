@@ -17,11 +17,12 @@ public class EffectCard extends ACard {
 		if(otherCard == null)
 			return false;
 		
-		if(otherCard instanceof EffectCard) {
-			return effect == ((EffectCard)otherCard).effect || color == ((EffectCard)otherCard).color;
-		} else {
-			return color == otherCard.color;
-		}
+		boolean playable = super.canBePlayedOn(otherCard);
+		
+		if(otherCard instanceof EffectCard)
+			playable |= effect == ((EffectCard)otherCard).effect;
+
+		return playable;
 	}
 	
 	@Override

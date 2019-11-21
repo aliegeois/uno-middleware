@@ -11,5 +11,7 @@ public abstract class ACard implements Serializable {
 		this.color = color;
 	}
 
-	public abstract boolean canBePlayedOn(ACard otherCard);
+	public boolean canBePlayedOn(ACard otherCard) {
+		return color == Color.Wild || color == otherCard.color;
+	}
 }
