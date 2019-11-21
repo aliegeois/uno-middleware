@@ -35,6 +35,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 		}
 
 		void yourTurn() throws RemoteException {
+			System.out.println("tour de "+ client.getName()+ ", joueur suivant: "+ nextClient(client.getName()));
 			while(cards.stream().noneMatch(c -> c.canBePlayedOn(playedCards.peek()))) {
 				List<ACard> cardsDrawn = cardsToDraw(1);
 				cards.addAll(cardsDrawn);
@@ -244,6 +245,9 @@ public class Server extends UnicastRemoteObject implements IServer {
 				case PlusFour:
 					nextClient(client).client.aboutToDrawFourCards();
 					break;
+				
+				case Wild:
+					nextClient(client).yourTurn();
 
 				default:
 			}
