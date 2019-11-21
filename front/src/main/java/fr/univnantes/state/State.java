@@ -21,13 +21,16 @@ interface State {
 	default void yourTurn(Game game) throws StateException {
 		throw new StateException(this, WaitingState.class, "yourTurn");
 	}
-	default void playStandardCard(Game game, ACard card) throws StateException { // numbers, skip, reverse and +2
+	/*default void playStandardCard(Game game, ACard card) throws StateException { // numbers, skip, reverse and +2
 		throw new StateException(this, PlayingState.class, "playStandardCard");
 	}
 	default void playPlusFourCard(Game game, ACard card) throws StateException {
 		throw new StateException(this, PlayingState.class, "playPlusFourCard");
 	}
 	default void playWildCard(Game game, ACard card) throws StateException { // Wild and wild+4
+		throw new StateException(this, PlayingState.class, "playWildCard");
+	}*/
+	default void playCard(Game game, ACard card) throws StateException { // Wild and wild+4
 		throw new StateException(this, PlayingState.class, "playWildCard");
 	}
 	default void draw(Game game, List<ACard> cards) throws StateException { // Stays in the same state
@@ -38,16 +41,16 @@ interface State {
 		throw new StateException(this, WaitingState.class, "aboutToDrawFourCards");
 	}
 	default void contest(Game game) throws StateException { // You think that the +4 was wrongfully played so you contest the move
-		throw new StateException(this, WillGetContestedState.class, "contest");
+		throw new StateException(this, WantToContestState.class, "contest");
 	}
 	default void doNotContest(Game game) throws StateException { // The +4 may have been right so you do nothing
-		throw new StateException(this, WillGetContestedState.class, "doNotContest");
+		throw new StateException(this, WantToContestState.class, "doNotContest");
 	}
 	default void winContest(Game game) throws StateException { // When the mofo did had a card of the right color so he draws 4 cards
-		throw new StateException(this, WantToContestState.class, "winContest");
+		throw new StateException(this, WillGetContestedState.class, "winContest");
 	}
 	default void loseContest(Game game, List<ACard> cards) throws StateException { // Cards to draw after loosing the contest (6)
-		throw new StateException(this, WantToContestState.class, "loseContest");
+		throw new StateException(this, WillGetContestedState.class, "loseContest");
 	}
 	
 	default void getContested(Game game) throws StateException { // When you wrongfully put a +4 and the next player contested it so you draw 4 cards

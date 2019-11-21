@@ -58,7 +58,7 @@ public class Game {
 		state.yourTurn(this);
 	}
 
-	public void playStandardCard(ACard card) throws StateException {
+	/*public void playStandardCard(ACard card) throws StateException {
 		state.playStandardCard(this, card);
 	}
 
@@ -68,6 +68,10 @@ public class Game {
 
 	public void playWildCard(ACard card) throws StateException {
 		state.playWildCard(this, card);
+	}*/
+
+	public void playCard(ACard card) throws StateException {
+		state.playCard(this, card);
 	}
 
 	public void draw(List<ACard> cards) throws StateException {

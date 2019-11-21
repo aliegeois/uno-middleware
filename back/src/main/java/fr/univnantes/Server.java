@@ -11,11 +11,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.Predicate;
 
 import fr.univnantes.cards.*;
 
 public class Server extends UnicastRemoteObject implements IServer {
 	private static final long serialVersionUID = 4419803375268480151L;
+
+	private static Predicate<? super ACard> isSkip() { return card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.Skip; }
+	private static Predicate<? super ACard> isPlusTwo() { return card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.PlusTwo; }
 
 	private class LocalClient {
 		public final IRemoteClient client;
@@ -158,17 +162,20 @@ public class Server extends UnicastRemoteObject implements IServer {
 			contestedClient.client.winContest();
 			List<ACard> cardsDrawn = cardsToDraw(6);
 			players.get(contestingClient).cards.addAll(cardsDrawn);
+			nextClient(contestingClient).client.yourTurn();
 			return cardsDrawn;
 		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
 			List<ACard> cardsDrawn = cardsToDraw(4);
 			contestedClient.cards.addAll(cardsDrawn);
 			contestedClient.client.loseContest(cardsDrawn);
+			nextClient(contestingClient).client.yourTurn();
 			return new ArrayList<>();
 		}
 	}
 
 	@Override
 	public List<ACard> doNotContest(String client) throws RemoteException {
+		previousClient(client).client.winContest();
 		nextClient(client).yourTurn();
 		List<ACard> cardsDrawn = cardsToDraw(4);
 		players.get(client).cards.addAll(cardsDrawn);
@@ -179,12 +186,13 @@ public class Server extends UnicastRemoteObject implements IServer {
 	public void counterPlusTwo(String client, ACard card, int nbCardsStacked) throws RemoteException {
 		players.get(client).cards.remove(card);
 		sendCardPlayed(client, card);
-		if(nextClient(client).cards.stream().filter(c -> c instanceof EffectCard && ((EffectCard)c).effect == Effect.PlusTwo).count() > 0) {
+		if(nextClient(client).cards.stream().anyMatch(isPlusTwo())) {
 			nextClient(client).client.getPlusTwoed(nbCardsStacked);
 		} else {
 			List<ACard> cardsDrawn = cardsToDraw(2 *nbCardsStacked);
 			nextClient(client).cards.addAll(cardsDrawn);
 			nextClient(client).client.draw(cardsDrawn);
+			nextClient(nextClient(client).name).client.yourTurn();
 		}
 	}
 
@@ -192,7 +200,11 @@ public class Server extends UnicastRemoteObject implements IServer {
 	public void counterSkip(String client, ACard card) throws RemoteException {
 		players.get(client).cards.remove(card);
 		sendCardPlayed(client, card);
-		nextClient(nextClient(client).name).yourTurn();
+		if(nextClient(client).cards.stream().anyMatch(isSkip())) {
+			nextClient(client).client.getSkipped();
+		} else {
+			nextClient(nextClient(client).name).yourTurn();
+		}
 	}
 
 	@Override
@@ -207,21 +219,21 @@ public class Server extends UnicastRemoteObject implements IServer {
 		if(card instanceof EffectCard) {
 			switch(((EffectCard)card).effect) {
 				case Skip:
-					if(nextClient(client).cards.stream().filter(c -> c instanceof EffectCard && ((EffectCard)c).effect == Effect.Skip).count() > 0)
+					if(nextClient(client).cards.stream().anyMatch(isSkip()))
 						nextClient(client).client.getSkipped();
 					else
 						nextClient(nextClient(client).name).yourTurn();
 					break;
 				
 				case PlusTwo:
-					if(nextClient(client).cards.stream().filter(c -> c instanceof EffectCard && ((EffectCard)c).effect == Effect.PlusTwo).count() > 0) {
+					if(nextClient(client).cards.stream().anyMatch(isPlusTwo())) {
 						nextClient(client).client.getPlusTwoed(1);
 					} else {
 						List<ACard> cardsDrawn = cardsToDraw(2);
 						nextClient(client).cards.addAll(cardsDrawn);
 						nextClient(client).client.draw(cardsDrawn);
+						nextClient(nextClient(client).name).yourTurn();
 					}
-					
 					break;
 				
 				case Reverse:

@@ -18,7 +18,7 @@ class WaitingState implements State {
 
 	@Override
 	public void aboutToDrawFourCards(Game game) {
-		game.setState(new WillGetContestedState());
+		game.setState(new WantToContestState());
 	}
 
 	@Override

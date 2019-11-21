@@ -200,7 +200,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		}
 	}
 	
-	@Override
+	/*@Override
 	public void playStandardCard(ACard card) {
 		try {
 			game.playStandardCard(card);
@@ -222,6 +222,15 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void playWildCard(ACard card) {
 		try {
 			game.playWildCard(card);
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
+	}*/
+
+	@Override
+	public void playCard(ACard card) {
+		try {
+			game.playCard(card);
 		} catch(StateException e) {
 			e.printStackTrace();
 		}

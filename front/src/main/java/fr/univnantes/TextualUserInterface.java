@@ -47,14 +47,7 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void startGame(List<String> players, List<ACard> initialCards, ACard pileCard) {
-		System.out.println("Debut de la partie, vous etes " + players.size() + " joueurs, voici vos cartes : " + cardsToText(initialCards, false));
-		// for(int i = 0; i < initialCards.size(); i++) {
-		// 	System.out.print(cardToText(initialCards.get(i)));
-		// 	if(i != initialCards.size() - 1)
-		// 		System.out.print(" , ");
-		// }
-		// System.out.println();
-		System.out.println("Carte du dessus du paquet : " + cardToText(pileCard));
+		System.out.println("Debut de la partie, vous etes " + players.size() + " joueurs : " + players.stream().reduce((acc, pl) -> acc + ", " + pl).get());
 	}
 
 	@Override
@@ -93,11 +86,13 @@ public class TextualUserInterface implements IUserInterface {
 			}
 		}
 
-		if(cardToPlay instanceof EffectCard && ((EffectCard)cardToPlay).effect == Effect.PlusFour) {
+		client.playCard(cardToPlay);
+
+		/*if(cardToPlay instanceof EffectCard && ((EffectCard)cardToPlay).effect == Effect.PlusFour) {
 			client.playPlusFourCard(cardToPlay);
 		} else {
 			client.playStandardCard(cardToPlay);
-		}
+		}*/
 	}
 
 	@Override
@@ -149,51 +144,14 @@ public class TextualUserInterface implements IUserInterface {
 	public void getSkipped() {
 		List<ACard> playableCards = client.getCards().stream().filter(isSkip()).collect(Collectors.toList());
 
-		// if(client.getCards().stream().noneMatch(isSkip())) {
 		if(playableCards.size() == 0) {
 			System.out.println("Votre tour est passe");
 		} else {
-			// List<ACard> playableCards = client.getCards().stream().filter(isSkip()).collect(Collectors.toList());
 			System.out.println("Vous pouvez jouer un skip pour contrer le precedent");// , choisissez le skip à utiliser : " + cardsToText(playableCards, false));
 			ACard cardToPlay = chooseACard(playableCards);
 			client.counterSkip(cardToPlay);
 		}
-		// if(client.getCards().stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0) {
-		// 	System.out.println("Votre tour va être passe.");
-		// 	System.out.println("Voulez-vous passer le tour du joueur suivant ?");
-		// } else {
-		// 	System.out.println("Votre tour est passe.");
-		// }
 	}
-
-	// @Override
-	// public void getPlusTwoed(int nbCards) {
-	// 	if(client.getCards().stream().filter(card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.PlusTwo).count() > 0) {
-	// 		int cardNumber;
-	// 		System.out.println("Vous allez piochez " + nbCards + " cartes");
-	// 		do {
-	// 			System.out.print("Entrez le numero de la carte : ");
-	// 			String input = console.readLine();
-	// 			try {
-	// 				cardNumber = Integer.parseInt(input);
-	// 				if(cardNumber < 1 || cardNumber > client.getCards().size() || !((client.getCards().get(cardNumber) instanceof EffectCard) && ((EffectCard)client.getCards().get(cardNumber)).effect == Effect.PlusTwo)) 
-	// 					throw new NumberFormatException();
-	// 			} catch(NumberFormatException e) {
-	// 				System.out.println("Nombre incorrect");
-	// 				cardNumber = -1;
-	// 			}
-	// 		} while(cardNumber != -1);
-
-	// 		ACard cardToPlay = client.getCards().get(cardNumber - 1);
-	// 		client.playStandardCard(cardToPlay);
-	// 		// this.cards.remove(cardNumber - 1);
-	// 		System.out.println(cardsToText(client.getCards(), false));
-
-	// 	} else {
-	// 		System.out.println("Vous piochez " + nbCards + " cartes");
-	// 		System.out.println(cardsToText(client.getCards(), false));
-	// 	}
-	// }
 
 	@Override
 	public void getPlusTwoed(int nbCardsStacked) {
@@ -210,10 +168,6 @@ public class TextualUserInterface implements IUserInterface {
 	public void cardPlayedBySomeoneElse(String otherPlayer, ACard card) {
 		System.out.println(otherPlayer + " joue : " + cardToText(card));
 	}
-
-	// private static List<ACard> filterCards(List<ACard> cards, Predicate<? super ACard> predicate) {
-	// 	return cards.stream().filter(predicate).collect(Collectors.toList());
-	// }
 
 	private ACard chooseACard(List<ACard> cards) {
 		System.out.println("Cartes selectionnables : " + cardsToText(cards, true));
@@ -236,7 +190,6 @@ public class TextualUserInterface implements IUserInterface {
 			}
 		} while(choosenCard == null);
 
-		
 		if(choosenCard instanceof EffectCard && (((EffectCard)choosenCard).effect == Effect.Wild || ((EffectCard)choosenCard).effect == Effect.PlusFour)) {
 			Color color;
 			do {
@@ -266,6 +219,12 @@ public class TextualUserInterface implements IUserInterface {
 		return choosenCard;
 	}
 
+	/**
+	 * 
+	 * @param cards Liste des cartes à filtrer
+	 * @param topCard Carte au dessus du paquet
+	 * @return Liste des cartes qui peuvent être posées
+	 */
 	private static List<ACard> playableCards(List<ACard> cards, ACard topCard) {
 		return cards.stream().filter(card -> card.canBePlayedOn(topCard)).collect(Collectors.toList());
 	}
