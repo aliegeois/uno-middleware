@@ -4,14 +4,14 @@ import java.util.List;
 
 import fr.univnantes.cards.ACard;
 
-class WantToContestState extends State {
+class WantToContestState implements State {
 	@Override
-	void winContest(Game game) {
+	public void winContest(Game game) {
 		game.setState(new WaitingState());
 	}
 
 	@Override
-	void loseContest(Game game, List<ACard> cards) {
+	public void loseContest(Game game, List<ACard> cards) {
 		game.cards.addAll(cards);
 		game.setState(new WaitingState());
 	}

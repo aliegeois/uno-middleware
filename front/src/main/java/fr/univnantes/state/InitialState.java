@@ -1,8 +1,8 @@
 package fr.univnantes.state;
 
-class InitialState extends State {
+class InitialState implements State {
 	@Override
-	void joinLobby(Game game, String name) {
+	public void joinLobby(Game game, String name) {
 		game.setState(new LobbyState());
 	}
 }

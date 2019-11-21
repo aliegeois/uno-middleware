@@ -5,7 +5,7 @@ import java.util.List;
 import fr.univnantes.cards.ACard;
 
 public interface IUserInterface {
-	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard);
+	public void startGame(List<String> players, List<ACard> initialCards, ACard pileCard);
 
 	public void yourTurn();
 	public void draw(List<ACard> cards);
@@ -18,5 +18,5 @@ public interface IUserInterface {
 	public void getSkipped();
 	public void getPlusTwoed(int nbCards);
 
-	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card);
+	public void cardPlayedBySomeoneElse(String otherPlayer, ACard card);
 }

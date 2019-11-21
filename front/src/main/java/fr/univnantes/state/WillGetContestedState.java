@@ -3,27 +3,26 @@ package fr.univnantes.state;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import fr.univnantes.IRemoteClient;
 import fr.univnantes.cards.ACard;
 
-class WillGetContestedState extends State {
+class WillGetContestedState implements State {
 	@Override
-	void contest(Game game, IRemoteClient contestedClient) {
+	public void contest(Game game) {
+		game.setState(new WaitingState());
 		try {
-			List<ACard> cardsToDraw = game.server.contest(game.client, contestedClient);
+			List<ACard> cardsToDraw = game.server.contest(game.client.name);
 			if(cardsToDraw.size() != 0) {
-				game.client.ui.draw(cardsToDraw);
 				game.cards.addAll(cardsToDraw);
+				game.client.ui.draw(cardsToDraw);
 			}
 		} catch(RemoteException e) {}
-		game.setState(new WaitingState());
 	}
 
 	@Override
-	void doNotContest(Game game) {
-		try {
-			game.cards.addAll(game.server.doNotContest(game.client));
-		} catch(RemoteException e) {}
+	public void doNotContest(Game game) {
 		game.setState(new WaitingState());
+		try {
+			game.cards.addAll(game.server.doNotContest(game.client.name));
+		} catch(RemoteException e) {}
 	}
 }

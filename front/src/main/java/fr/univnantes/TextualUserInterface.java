@@ -2,8 +2,9 @@ package fr.univnantes;
 
 import java.io.Console;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import fr.univnantes.cards.ACard;
 import fr.univnantes.cards.Color;
@@ -12,25 +13,261 @@ import fr.univnantes.cards.EffectCard;
 import fr.univnantes.cards.NumberCard;
 
 public class TextualUserInterface implements IUserInterface {
-	private final Console console = System.console();
-	private final ILocalClient client;
-	private final List<ACard> cards = new ArrayList<>();
+	private static Predicate<? super ACard> isSkip() { return card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.Skip; }
+	private static Predicate<? super ACard> isPlusTwo() { return card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.PlusTwo; }
+
+	private static final Console console = System.console();
+	private ILocalClient client;
+	private String name;
+	// private final List<ACard> cards = new ArrayList<>();
 
 	TextualUserInterface() {
 		System.out.print("Entrez votre nom : ");
-		String name = console.readLine();
-		ILocalClient _client = null;
+		name = console.readLine();
 		try {
-			_client = new Client(name, this);
-		} catch (RemoteException e) {
-			// System.err.println(e.getMessage());
+			client = new Client(name, this);
+		} catch(RemoteException e) {
 			e.printStackTrace();
 		}
-		client = _client;
 
-		if(client != null) {
-			client.setReady(true);
+		System.out.println("Vous etes dans le lobby");
+		boolean ready = false;
+		do {
+			System.out.println("Entrez \"ready\" quand vous etes prets");
+			String input = console.readLine();
+			if("ready".equalsIgnoreCase(input)) {
+				ready = true;
+			} else {
+				System.out.println("Entree incorrecte");
+			}
+		} while(!ready);
+
+		client.setReady(ready);
+	}
+
+	@Override
+	public void startGame(List<String> players, List<ACard> initialCards, ACard pileCard) {
+		System.out.println("Debut de la partie, vous etes " + players.size() + " joueurs, voici vos cartes : " + cardsToText(initialCards, false));
+		// for(int i = 0; i < initialCards.size(); i++) {
+		// 	System.out.print(cardToText(initialCards.get(i)));
+		// 	if(i != initialCards.size() - 1)
+		// 		System.out.print(" , ");
+		// }
+		// System.out.println();
+		System.out.println("Carte du dessus du paquet : " + cardToText(pileCard));
+	}
+
+	@Override
+	public void yourTurn() {
+		System.out.println("A votre tour de jouer, liste de vos cartes :");
+		System.out.println(cardsToText(client.getCards(), false));
+		System.out.println("Carte du dessus du paquet : " + cardToText(client.getTopCard()));
+		
+		List<ACard> pCards = playableCards(client.getCards(), client.getTopCard());
+		if(pCards.size() == 0) {
+			System.out.println("Vous n'avez aucune carte jouable");
+			return;
 		}
+		// System.out.println("Liste de vos cartes jouables :");
+		// System.out.println(cardsToText(pCards, true));
+		
+		ACard cardToPlay = chooseACard(pCards);
+
+		if(cardToPlay instanceof EffectCard) {
+			switch(((EffectCard)cardToPlay).effect) {
+				case PlusFour:
+					System.out.println("Vous jouez un +4, le prochain joueur pioche 4 cartes et cette carte devient " + cardToPlay.color.name().toLowerCase());
+					break;
+				case PlusTwo:
+					System.out.println("Vous jouez un +2, le prochain joueur pioche 2 cartes");
+					break;
+				case Reverse:
+					System.out.println("Vous jouez un changement de sens, le prochain joueur devient le precedent");
+					break;
+				case Skip:
+					System.out.println("Vous jouez une interdiction, le prochain joueur ne joue pas");
+					break;
+				case Wild:
+					System.out.println("Vous jouez un choix de couleur, cette carte devient " + cardToPlay.color.name().toLowerCase());
+					break;
+			}
+		}
+
+		if(cardToPlay instanceof EffectCard && ((EffectCard)cardToPlay).effect == Effect.PlusFour) {
+			client.playPlusFourCard(cardToPlay);
+		} else {
+			client.playStandardCard(cardToPlay);
+		}
+	}
+
+	@Override
+	public void draw(List<ACard> cards) {
+		System.out.println("Vous piochez " + cards.size() + " cartes : " + cardsToText(cards, false));
+	}
+
+	@Override
+	public void aboutToDrawFourCards() {
+		int answer = 0;
+		do {
+			System.out.println("Vous allez piochez 4 cartes, voulez-vous le contestez ? (oui/non)");
+			String input = console.readLine();
+			if("oui".equalsIgnoreCase(input))
+				answer = 1;
+			else if("non".equalsIgnoreCase(input))
+				answer = -1;
+			else {
+				System.out.println("Reponse incorrecte");
+				answer = 0;
+			}
+		} while(answer == 0);
+
+		if(answer == 1) {
+			System.out.println("Vous contestez");
+			client.contest();
+		} else {
+			System.out.println("Vous ne contestez pas");
+			client.doNotContest();
+		}
+	}
+
+	@Override
+	public void winContest() {
+		System.out.println("Vous avez gagnez le conteste, le joueur precedent pioche 6 cartes");
+	}
+
+	@Override
+	public void loseContest(List<ACard> cards) {
+		System.out.print("Vous perdez le conteste, vous piochez 4 cartes : " + cardsToText(cards, false));
+	}
+
+	@Override
+	public void getContested() {
+		System.out.println("Un joueur conteste votre +4");
+	}
+
+	@Override
+	public void getSkipped() {
+		List<ACard> playableCards = client.getCards().stream().filter(isSkip()).collect(Collectors.toList());
+
+		// if(client.getCards().stream().noneMatch(isSkip())) {
+		if(playableCards.size() == 0) {
+			System.out.println("Votre tour est passe");
+		} else {
+			// List<ACard> playableCards = client.getCards().stream().filter(isSkip()).collect(Collectors.toList());
+			System.out.println("Vous pouvez jouer un skip pour contrer le precedent");// , choisissez le skip à utiliser : " + cardsToText(playableCards, false));
+			ACard cardToPlay = chooseACard(playableCards);
+			client.counterSkip(cardToPlay);
+		}
+		// if(client.getCards().stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0) {
+		// 	System.out.println("Votre tour va être passe.");
+		// 	System.out.println("Voulez-vous passer le tour du joueur suivant ?");
+		// } else {
+		// 	System.out.println("Votre tour est passe.");
+		// }
+	}
+
+	// @Override
+	// public void getPlusTwoed(int nbCards) {
+	// 	if(client.getCards().stream().filter(card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.PlusTwo).count() > 0) {
+	// 		int cardNumber;
+	// 		System.out.println("Vous allez piochez " + nbCards + " cartes");
+	// 		do {
+	// 			System.out.print("Entrez le numero de la carte : ");
+	// 			String input = console.readLine();
+	// 			try {
+	// 				cardNumber = Integer.parseInt(input);
+	// 				if(cardNumber < 1 || cardNumber > client.getCards().size() || !((client.getCards().get(cardNumber) instanceof EffectCard) && ((EffectCard)client.getCards().get(cardNumber)).effect == Effect.PlusTwo)) 
+	// 					throw new NumberFormatException();
+	// 			} catch(NumberFormatException e) {
+	// 				System.out.println("Nombre incorrect");
+	// 				cardNumber = -1;
+	// 			}
+	// 		} while(cardNumber != -1);
+
+	// 		ACard cardToPlay = client.getCards().get(cardNumber - 1);
+	// 		client.playStandardCard(cardToPlay);
+	// 		// this.cards.remove(cardNumber - 1);
+	// 		System.out.println(cardsToText(client.getCards(), false));
+
+	// 	} else {
+	// 		System.out.println("Vous piochez " + nbCards + " cartes");
+	// 		System.out.println(cardsToText(client.getCards(), false));
+	// 	}
+	// }
+
+	@Override
+	public void getPlusTwoed(int nbCardsStacked) {
+		List<ACard> playableCards = client.getCards().stream().filter(isPlusTwo()).collect(Collectors.toList());
+
+		if(playableCards.size() != 0) {
+			System.out.println("Vous pouvez jouer un +2 pour ne rien piocher et faire piocher 2 cartes de plus au joueur suivant");
+			ACard cardToPlay = chooseACard(playableCards);
+			client.counterPlusTwo(cardToPlay);
+		}
+	}
+
+	@Override
+	public void cardPlayedBySomeoneElse(String otherPlayer, ACard card) {
+		System.out.println(otherPlayer + " joue : " + cardToText(card));
+	}
+
+	// private static List<ACard> filterCards(List<ACard> cards, Predicate<? super ACard> predicate) {
+	// 	return cards.stream().filter(predicate).collect(Collectors.toList());
+	// }
+
+	private ACard chooseACard(List<ACard> cards) {
+		System.out.println("Cartes selectionnables : " + cardsToText(cards, true));
+
+		ACard choosenCard;
+		do {
+			System.out.print("Entrez le numero de la carte que vous voulez choisir : ");
+			String input = console.readLine();
+
+			int cardNumber;
+			try {
+				cardNumber = Integer.parseInt(input);
+				if(cardNumber < 1 || cardNumber > cards.size())
+					throw new NumberFormatException();
+				
+				choosenCard = cards.get(cardNumber - 1);
+			} catch(NumberFormatException e) {
+				System.out.println("Nombre incorrect");
+				choosenCard = null;
+			}
+		} while(choosenCard == null);
+
+		
+		if(choosenCard instanceof EffectCard && (((EffectCard)choosenCard).effect == Effect.Wild || ((EffectCard)choosenCard).effect == Effect.PlusFour)) {
+			Color color;
+			do {
+				System.out.print("Entrez la couleur que vous voulez appliquer à cette carte (rouge, bleu, vert ou jaune) : ");
+				String input = console.readLine();
+
+				if("rouge".equalsIgnoreCase(input))
+					color = Color.Red;
+				else if("bleu".equalsIgnoreCase(input))
+					color = Color.Blue;
+				else if("vert".equalsIgnoreCase(input))
+					color = Color.Green;
+				else if("jaune".equalsIgnoreCase(input))
+					color = Color.Yellow;
+				else
+					color = null;
+				
+				if(color == null)
+					System.out.println("Couleur incorrecte");
+			} while(color == null);
+
+			choosenCard.color = color;
+		}
+
+		System.out.println("Vous avez choisi " + cardToText(choosenCard));
+
+		return choosenCard;
+	}
+
+	private static List<ACard> playableCards(List<ACard> cards, ACard topCard) {
+		return cards.stream().filter(card -> card.canBePlayedOn(topCard)).collect(Collectors.toList());
 	}
 
 	private static String cardToText(ACard card) {
@@ -75,179 +312,17 @@ public class TextualUserInterface implements IUserInterface {
 		return value + " ]" + ANSIColor.RESET;
 	}
 
-	private static String cardsToText(List<ACard> cards) {
+	private static String cardsToText(List<ACard> cards, boolean showNumbers) {
 		String value = "{ ";
 		for(int i = 0; i < cards.size(); i++) {
-			value += "(" + (i+1) + ")" + cardToText(cards.get(i));
+			if(showNumbers)
+				value += "(" + (i+1) + ")";
+			value += cardToText(cards.get(i));
 			if(i != cards.size() - 1)
 				value += " - ";
 		}
 		
 		return value + " }";
-	}
-
-	// @Override
-	// public void clientReady() {
-	// 	System.out.println("Entrée dans le lobby");
-	// 	boolean ready = false;
-	// 	do {
-	// 		System.out.println("Entrez \"ready\" quand vous êtes prêt");
-	// 		String input = console.readLine();
-	// 		if("ready".equals(input)) {
-	// 			ready = true;
-	// 		} else {
-	// 			System.out.println("Incorrect");
-	// 		}
-	// 	} while(!ready);
-
-	// 	client.setReady(true);
-	// }
-
-	@Override
-	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) {
-		System.out.print("Debut de la partie, vous etes " + nbPlayers + " joueurs, voici vos cartes: ");
-		for(int i = 0; i < initialCards.size(); i++) {
-			System.out.print(cardToText(initialCards.get(i)));
-			if(i != initialCards.size() - 1)
-				System.out.print(" , ");
-		}
-		System.out.println();
-		System.out.println("Carte du dessus du paquet: " + cardToText(pileCard));
-	}
-
-	@Override
-	public void yourTurn() {
-		System.out.println("A votre tour de jouer, liste de vos cartes: ");
-		System.out.println(cardsToText(cards));
-		
-		int cardNumber;
-		do {
-			System.out.print("Entrez le numéro de la carte que vous voulez jouer: ");
-			String input = console.readLine();
-			try {
-				cardNumber = Integer.parseInt(input);
-				if(cardNumber < 1 || cardNumber > cards.size())
-					throw new NumberFormatException();
-			} catch(NumberFormatException e) {
-				System.out.println("Nombre incorrect");
-				cardNumber = -1;
-			}
-		} while(cardNumber == -1);
-
-		ACard cardToPlay = cards.get(cardNumber - 1);
-
-		if(cardToPlay instanceof EffectCard) {
-			if(((EffectCard)cardToPlay).effect == Effect.Wild || ((EffectCard)cardToPlay).effect == Effect.PlusFour) {
-				Color color = null;
-				do {
-					System.out.print("Entrez la couleur que vous voulez appliquer à cette carte (rouge, bleu, vert ou jaune): ");
-					String input = console.readLine();
-					if("rouge".equalsIgnoreCase(input))
-						color = Color.Red;
-					if("bleu".equalsIgnoreCase(input))
-						color = Color.Blue;
-					if("vert".equalsIgnoreCase(input))
-						color = Color.Green;
-					if("jaune".equalsIgnoreCase(input))
-						color = Color.Yellow;
-					
-					if(color == null) {
-						System.out.println("Couleur incorrecte");
-					}
-				} while(color == null);
-	
-				cardToPlay.color = color;
-	
-				if(((EffectCard)cardToPlay).effect == Effect.Wild)
-					client.playWildCard(cardToPlay, color);
-				if(((EffectCard)cardToPlay).effect == Effect.PlusFour)
-					client.playPlusFourCard(cardToPlay, color);
-			}
-		} else {
-			client.playStandardCard(cardToPlay);
-		}
-		this.cards.remove(cardNumber - 1);
-		System.out.println(cardsToText(cards));
-	}
-
-	@Override
-	public void draw(List<ACard> cards) {
-		System.out.println("Vous piochez"+ cards.size() + " cartes.");
-		this.cards.addAll(cards);
-		System.out.println(cardsToText(cards));
-
-	}
-
-	@Override
-	public void aboutToDrawFourCards() {
-		System.out.println("Vous allez piochez 4 cartes, voulez-vous le contestez ?");
-
-	}
-
-	@Override
-	public void winContest() {
-		System.out.println("Vous avez gagnez le conteste.");
-
-	}
-
-	@Override
-	public void loseContest(List<ACard> cards) {
-		System.out.println("Dans le cul, Lulu !");
-		this.cards.addAll(cards);
-		System.out.println(cardsToText(cards));
-	}
-
-	@Override
-	public void getContested() {
-		System.out.println("Un joueur conteste votre +4.");
-
-	}
-
-	@Override
-	public void getSkipped() {
-		if(cards.stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0){
-			System.out.println("Votre tour va être passé.");
-			System.out.println("Voulez-vous passer le tour du joueur suivant ?");
-		}else{
-			System.out.println("Votre tour est passe.");
-		}
-
-	}
-
-	@Override
-	public void getPlusTwoed(int nbCards) {
-		if(cards.stream().filter(ncard -> ncard instanceof EffectCard && ((EffectCard)ncard).effect == Effect.PlusTwo).count() > 0){
-			int cardNumber;
-			System.out.println("Vous allez piochez "+ nbCards+ " cartes");
-			do {
-				System.out.println("Entrez le numero de la carte:");
-				String input = console.readLine();
-				try {
-					cardNumber = Integer.parseInt(input);
-					if(cardNumber < 1 || cardNumber > cards.size()|| !((cards.get(cardNumber) instanceof EffectCard) && ((EffectCard)cards.get(cardNumber)).effect == Effect.PlusTwo)) 
-						throw new NumberFormatException();
-				} catch(NumberFormatException e) {
-					System.out.println("Nombre incorrect");
-					cardNumber = -1;
-				}
-			} while(cardNumber!=-1);
-
-			ACard cardToPlay = cards.get(cardNumber -1);
-			client.playStandardCard(cardToPlay);
-			this.cards.remove(cardNumber - 1);
-			System.out.println(cardsToText(cards));
-
-		} else {
-			System.out.println("Vous piochez " + nbCards + " cartes.");
-			System.out.println(cardsToText(cards));
-		}
-	}
-
-	@Override
-	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) {
-		try {
-			System.out.println(client.getName() + " joue : "+ cardToText(card));	
-		} catch (RemoteException e) {}
 	}
 
 	public static void main(String[] args) {

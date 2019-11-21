@@ -5,26 +5,25 @@ import java.util.List;
 
 import fr.univnantes.cards.ACard;
 
-class LobbyState extends State {
+class LobbyState implements State {
 	@Override
-	void leaveLobby(Game game) {
+	public void leaveLobby(Game game) {
 		game.setState(new InitialState());
 	}
 
 	@Override
-	void setReady(Game game, boolean ready) {
+	public void setReady(Game game, boolean ready) {
 		try {
-			game.server.setReady(game.client, ready);
+			game.server.setReady(game.client.name, ready);
 		} catch(RemoteException e) {}
 	}
 
 	@Override
-	void startGame(Game game, int nbPlayers, List<ACard> initialCards, ACard pileCard) {
-		System.out.println("LobbyState.startGame");
-		game.nbPlayers = nbPlayers;
+	public void startGame(Game game, List<String> players, List<ACard> initialCards, ACard pileCard) {
+		game.nbPlayers = players.size();
 		game.cards.addAll(initialCards);
+		game.topCard = pileCard;
 		
 		game.setState(new WaitingState());
-		System.out.println("end start");
 	}
 }

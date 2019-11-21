@@ -8,12 +8,12 @@ import fr.univnantes.cards.ACard;
 
 public interface IServer extends Remote {
 	public boolean join(IRemoteClient client) throws RemoteException;
-	public void setReady(IRemoteClient client, boolean ready) throws RemoteException;
+	public void setReady(String client, boolean ready) throws RemoteException;
 
-	public List<ACard> contest(IRemoteClient contestingClient, IRemoteClient contestedClient) throws RemoteException;
-	public List<ACard> doNotContest(IRemoteClient clientlient) throws RemoteException;
-	public void counterPlusTwo(IRemoteClient client, ACard card, int quantity) throws RemoteException;
-	public void doNotCounterPlusTwo(IRemoteClient client, int quantity) throws RemoteException;
-	public void counterSkip(IRemoteClient client, ACard card) throws RemoteException;
-	public void playCard(IRemoteClient client, ACard card) throws RemoteException;
+	public List<ACard> contest(String contestingClient) throws RemoteException;
+	public List<ACard> doNotContest(String client) throws RemoteException;
+	public void counterPlusTwo(String client, ACard card, int quantity) throws RemoteException;
+	public void doNotCounterPlusTwo(String client, int quantity) throws RemoteException;
+	public void counterSkip(String client, ACard card) throws RemoteException;
+	public void playCard(String client, ACard card) throws RemoteException;
 }

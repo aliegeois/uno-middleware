@@ -1,13 +1,20 @@
 package fr.univnantes;
 
+import java.util.List;
+
 import fr.univnantes.cards.ACard;
-import fr.univnantes.cards.Color;
 
 public interface ILocalClient {
 	public void setReady(boolean ready);
-	public void contest(IRemoteClient contestedClient);
+	public void contest();
 	public void doNotContest();
+	public void counterPlusTwo(ACard card);
+	public void counterSkip(ACard card);
 	public void playStandardCard(ACard card);
-	public void playPlusFourCard(ACard card, Color color);
-	public void playWildCard(ACard card, Color color);
+	public void playPlusFourCard(ACard card);
+	public void playWildCard(ACard card);
+
+	public List<String> getPlayers();
+	public List<ACard> getCards();
+	public ACard getTopCard();
 }

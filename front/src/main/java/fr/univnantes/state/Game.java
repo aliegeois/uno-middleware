@@ -6,17 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import fr.univnantes.Client;
-import fr.univnantes.IRemoteClient;
 import fr.univnantes.IServer;
 import fr.univnantes.cards.ACard;
-import fr.univnantes.cards.Color;
 
 public class Game {
 	final Client client;
 	final IServer server;
 
 	State state;
-	List<ACard> cards = new ArrayList<>(); // Liste de nos cartes
+	public final List<ACard> cards = new ArrayList<>(); // Liste de nos cartes
+	ACard topCard;
 	
 	Map<String, Integer[]> opponentsCards = new HashMap<>();
 	// Integer[] opponentsCards; // Nombre de cartes de chaque autre joueur
@@ -52,9 +51,8 @@ public class Game {
 		state.leaveLobby(this);
 	}
 
-	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws StateException {
-		System.out.println("Game.startGame");
-		state.startGame(this, nbPlayers, initialCards, pileCard);
+	public void startGame(List<String> players, List<ACard> initialCards, ACard pileCard) throws StateException {
+		state.startGame(this, players, initialCards, pileCard);
 	}
 
 	public void yourTurn() throws StateException {
@@ -65,12 +63,12 @@ public class Game {
 		state.playStandardCard(this, card);
 	}
 
-	public void playPlusFourCard(ACard card, Color color) throws StateException {
-		state.playPlusFourCard(this, card, color);
+	public void playPlusFourCard(ACard card) throws StateException {
+		state.playPlusFourCard(this, card);
 	}
 
-	public void playWildCard(ACard card, Color color) throws StateException {
-		state.playWildCard(this, card, color);
+	public void playWildCard(ACard card) throws StateException {
+		state.playWildCard(this, card);
 	}
 
 	public void draw(List<ACard> cards) throws StateException {
@@ -82,8 +80,8 @@ public class Game {
 		state.aboutToDrawFourCards(this);
 	}
 
-	public void contest(IRemoteClient contestedClient) throws StateException {
-		state.contest(this, contestedClient);
+	public void contest() throws StateException {
+		state.contest(this);
 	}
 
 	public void doNotContest() throws StateException {
@@ -111,17 +109,17 @@ public class Game {
 		state.counterSkip(this, card);
 	}
 
-	public void getPlusTwoed(int quantity) throws StateException {
-		state.getPlusTwoed(this, quantity);
+	public void getPlusTwoed(int cardsStacked) throws StateException {
+		state.getPlusTwoed(this, cardsStacked);
 	}
 
-	public void counterPlusTwo(ACard card, int quantity) throws StateException {
-		state.counterPlusTwo(this, card, quantity);
+	public void counterPlusTwo(ACard card) throws StateException {
+		state.counterPlusTwo(this, card);
 	}
 
 
-	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) throws StateException {
-		state.cardPlayedBySomeoneElse(this, client, card);
+	public void cardPlayedBySomeoneElse(String otherClient, ACard card) throws StateException {
+		state.cardPlayedBySomeoneElse(this, otherClient, card);
 	}
 
 	public void replay() throws StateException {
@@ -130,5 +128,10 @@ public class Game {
 
 	public void quit() throws StateException {
 		state.quit(this);
+	}
+
+
+	public ACard getTopCard() {
+		return topCard;
 	}
 }

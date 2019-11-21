@@ -1,13 +1,13 @@
 package fr.univnantes.state;
 
-class EndGameState extends State {
+class EndGameState implements State {
 	@Override
-	void replay(Game game) {
+	public void replay(Game game) {
 		game.setState(new LobbyState());
 	}
 
 	@Override
-	void quit(Game game) {
+	public void quit(Game game) {
 		System.exit(0);
 	}
 }

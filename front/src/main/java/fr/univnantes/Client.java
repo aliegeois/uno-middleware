@@ -6,7 +6,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
 import fr.univnantes.cards.ACard;
-import fr.univnantes.cards.Color;
 import fr.univnantes.state.Game;
 import fr.univnantes.state.StateException;
 
@@ -17,9 +16,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public final IUserInterface ui;
 	final Game game;
 	final IServer server;
-	// private Collection<ICard> cards;
-
-	private boolean palying = false;
+	private List<String> players;
 
 	public Client(String name, IUserInterface ui) throws RemoteException {
 		super();
@@ -41,14 +38,14 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void startGame(int nbPlayers, List<ACard> initialCards, ACard pileCard) throws RemoteException {
-		System.out.println("Client.startGame");
+	public void startGame(List<String> players, List<ACard> initialCards, ACard pileCard) throws RemoteException {
+		this.players = players;
 		try {
-			game.startGame(nbPlayers, initialCards, pileCard);
+			game.startGame(players, initialCards, pileCard);
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
-		ui.startGame(nbPlayers, initialCards, pileCard);
+		ui.startGame(players, initialCards, pileCard);
 	}
 
 	@Override
@@ -132,13 +129,28 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void cardPlayedBySomeoneElse(IRemoteClient client, ACard card) throws RemoteException {
+	public void cardPlayedBySomeoneElse(String otherClient, ACard card) throws RemoteException {
 		try {
-			game.cardPlayedBySomeoneElse(client, card);
+			game.cardPlayedBySomeoneElse(otherClient, card);
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
-		ui.cardPlayedBySomeoneElse(client, card);
+		ui.cardPlayedBySomeoneElse(otherClient, card);
+	}
+
+	@Override
+	public List<String> getPlayers() {
+		return players;
+	}
+
+	@Override
+	public List<ACard> getCards() {
+		return game.cards;
+	}
+
+	@Override
+	public ACard getTopCard() {
+		return game.getTopCard();
 	}
 
 	// ----------
@@ -153,9 +165,9 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void contest(IRemoteClient contestedClient) {
+	public void contest() {
 		try {
-			game.contest(contestedClient);
+			game.contest();
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
@@ -165,6 +177,24 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public void doNotContest() {
 		try {
 			game.doNotContest();
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void counterPlusTwo(ACard card) {
+		try {
+			game.counterPlusTwo(card);
+		} catch(StateException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void counterSkip(ACard card) {
+		try {
+			game.counterSkip(card);
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
@@ -180,18 +210,18 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void playPlusFourCard(ACard card, Color color) {
+	public void playPlusFourCard(ACard card) {
 		try {
-			game.playPlusFourCard(card, color);
+			game.playPlusFourCard(card);
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Override
-	public void playWildCard(ACard card, Color color) {
+	public void playWildCard(ACard card) {
 		try {
-			game.playWildCard(card, color);
+			game.playWildCard(card);
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
@@ -202,19 +232,19 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		return name;
 	}
 
-	@Override
-	public void setCards(List<ACard> cards) throws RemoteException {
-		// set cards
+	// @Override
+	// public void setCards(List<ACard> cards) throws RemoteException {
+	// 	// set cards
 		
-	}
+	// }
 
-	@Override
-	public List<ACard> getCards() throws RemoteException {
-		return game.getCards();
-	}
+	// @Override
+	// public List<ACard> getCards() throws RemoteException {
+	// 	return game.getCards();
+	// }
 
-	@Override
-	public boolean isPlaying() throws RemoteException {
-		return palying;
-	}
+	// @Override
+	// public boolean isPlaying() throws RemoteException {
+	// 	return palying;
+	// }
 }
