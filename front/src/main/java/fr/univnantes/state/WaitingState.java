@@ -38,6 +38,6 @@ class WaitingState implements State {
 
 	@Override
 	public void cardPlayedBySomeoneElse(Game game, String otherClient, ACard card) {
-		game.pileCard = card;
+		game.topCard = card;
 	}
 }
