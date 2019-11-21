@@ -141,19 +141,20 @@ public class Server extends UnicastRemoteObject implements IServer {
 	public List<ACard> contest(String contestingClient) throws RemoteException {
 		LocalClient contestedClient = previousClient(contestingClient);
 
-		long playableCards = contestedClient.cards.stream()
+		long nbPlayableCards = contestedClient.cards.stream()
 		.filter(card -> card instanceof EffectCard ? (((EffectCard)card).effect != Effect.Wild) && (((EffectCard)card).effect != Effect.PlusFour) : true) // On récupères toutes les cartes sauf wild et plusfour
 		.filter(card -> {
-			boolean condition = card.color == playedCards.peek().color;
-			if(card instanceof NumberCard) {
-				condition |= ((NumberCard)card).value == ((NumberCard)playedCards.peek()).value;
-			} else if(card instanceof EffectCard) { // Selon les règles, pas besoin de vérifer les wilds
-				condition |= ((EffectCard)card).effect == ((EffectCard)playedCards.peek()).effect;
-			}
-			return condition; // On récupère toutes les cartes qui sont possiblement jouables
+			return card.canBePlayedOn(playedCards.peek());
+			// boolean condition = card.color == playedCards.peek().color;
+			// if(card instanceof NumberCard) {
+			// 	condition |= ((NumberCard)card).value == ((NumberCard)playedCards.peek()).value;
+			// } else if(card instanceof EffectCard) { // Selon les règles, pas besoin de vérifer les wilds
+			// 	condition |= ((EffectCard)card).effect == ((EffectCard)playedCards.peek()).effect;
+			// }
+			// return condition; // On récupère toutes les cartes qui sont possiblement jouables
 		}).count();
 
-		if(playableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
+		if(nbPlayableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
 			contestedClient.client.winContest();
 			List<ACard> cardsDrawn = cardsToDraw(6);
 			players.get(contestingClient).cards.addAll(cardsDrawn);
@@ -279,7 +280,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 		int firstStep = Math.min(nbCards, deck.size());
 
 		for(int i = 0; i < firstStep; i++)
-			cardsDrawn.add(deck.get(deck.size()));
+			cardsDrawn.add(deck.remove(0));
 
 		if(nbCards != firstStep) {
 			ACard lastCard = playedCards.pop();
@@ -288,7 +289,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 			playedCards.push(lastCard);
 			
 			for(int i = 0; i < nbCards - firstStep; i++)
-				cardsDrawn.add(deck.get(deck.size()));
+				cardsDrawn.add(deck.remove(0));
 		}
 
 		return cardsDrawn;

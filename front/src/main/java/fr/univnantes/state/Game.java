@@ -20,7 +20,6 @@ public class Game {
 	Map<String, Integer[]> opponentsCards = new HashMap<>();
 	// Integer[] opponentsCards; // Nombre de cartes de chaque autre joueur
 	int nbPlayers;
-	ACard pileCard; // La carte en haut de la pile
 	int initialNumberOfCards;
 
 	public Game(Client client, IServer server) {
@@ -51,8 +50,8 @@ public class Game {
 		state.leaveLobby(this);
 	}
 
-	public void startGame(List<String> players, List<ACard> initialCards, ACard pileCard) throws StateException {
-		state.startGame(this, players, initialCards, pileCard);
+	public void startGame(List<String> players, List<ACard> initialCards, ACard topCard) throws StateException {
+		state.startGame(this, players, initialCards, topCard);
 	}
 
 	public void yourTurn() throws StateException {
