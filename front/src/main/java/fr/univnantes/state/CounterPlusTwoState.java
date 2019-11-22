@@ -14,6 +14,7 @@ class CounterPlusTwoState implements State {
 	@Override
 	public void counterPlusTwo(Game game, ACard card) {
 		game.cards.remove(card);
+		game.topCard = card;
 		game.setState(new WaitingState());
 		try {
 			game.server.counterPlusTwo(game.client.name, card, nbCardsStacked + 1);

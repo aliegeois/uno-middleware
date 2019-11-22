@@ -7,10 +7,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import fr.univnantes.cards.ACard;
+import fr.univnantes.cards.ANSIColor;
 import fr.univnantes.cards.Color;
 import fr.univnantes.cards.Effect;
 import fr.univnantes.cards.EffectCard;
-import fr.univnantes.cards.NumberCard;
 
 public class TextualUserInterface implements IUserInterface {
 	private static Predicate<? super ACard> isSkip() { return card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.Skip; }
@@ -53,12 +53,12 @@ public class TextualUserInterface implements IUserInterface {
 	@Override
 	public void yourTurn() {
 		System.out.println("A votre tour de jouer, liste de vos cartes :");
-		System.out.println(cardsToText(client.getCards(), false));
-		System.out.println("Carte du dessus du paquet : " + cardToText(client.getTopCard()));
+		System.out.println(ACard.asText(client.getCards(), false));
+		System.out.println("Carte du dessus du paquet : " + client.getTopCard());
 		
 		List<ACard> pCards = playableCards(client.getCards(), client.getTopCard());
 		if(pCards.size() == 0) {
-			System.out.println("Vous n'avez aucune carte jouable");
+			System.out.println(ANSIColor.CYAN.toString() + "Vous n'avez aucune carte jouable" + ANSIColor.RESET.toString());
 			return;
 		}
 		// System.out.println("Liste de vos cartes jouables :");
@@ -96,8 +96,12 @@ public class TextualUserInterface implements IUserInterface {
 	}
 
 	@Override
-	public void draw(List<ACard> cards) {
-		System.out.println("Vous piochez " + cards.size() + " cartes : " + cardsToText(cards, false));
+	public void draw(List<ACard> cards, boolean forced) {
+		if(forced)
+			System.out.print("Vous ne pouvez jouer aucune carte, vous piochez ");
+		else
+			System.out.print("Vous piochez " + cards.size() + " carte" + (cards.size() == 1 ? "" : "s") + " : ");
+		System.out.println(ACard.asText(cards, false));
 	}
 
 	@Override
@@ -132,7 +136,7 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void loseContest(List<ACard> cards) {
-		System.out.print("Vous perdez le conteste, vous piochez 4 cartes : " + cardsToText(cards, false));
+		System.out.print("Vous perdez le conteste, vous piochez 4 cartes : " + ACard.asText(cards, false));
 	}
 
 	@Override
@@ -166,11 +170,21 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void cardPlayedBySomeoneElse(String otherPlayer, ACard card) {
-		System.out.println(otherPlayer + " joue : " + cardToText(card));
+		System.out.println(otherPlayer + " joue : " + card);
+	}
+
+	@Override
+	public void endGame(String winner) {
+		if(name.equals(winner))
+			System.out.println("Vous avez gagne !");
+		else
+			System.out.println(winner + " a gagne");
+
+		System.exit(0);
 	}
 
 	private ACard chooseACard(List<ACard> cards) {
-		System.out.println("Cartes selectionnables : " + cardsToText(cards, true));
+		System.out.println("Cartes selectionnables : " + ACard.asText(cards, true));
 
 		ACard choosenCard;
 		do {
@@ -193,7 +207,7 @@ public class TextualUserInterface implements IUserInterface {
 		if(choosenCard instanceof EffectCard && (((EffectCard)choosenCard).effect == Effect.Wild || ((EffectCard)choosenCard).effect == Effect.PlusFour)) {
 			Color color;
 			do {
-				System.out.print("Entrez la couleur que vous voulez appliquer à cette carte (rouge, bleu, vert ou jaune) : ");
+				System.out.print("Entrez la couleur que vous voulez appliquer a cette carte (rouge, bleu, vert ou jaune) : ");
 				String input = console.readLine();
 
 				if("rouge".equalsIgnoreCase(input))
@@ -214,7 +228,7 @@ public class TextualUserInterface implements IUserInterface {
 			choosenCard.color = color;
 		}
 
-		System.out.println("Vous avez choisi " + cardToText(choosenCard));
+		System.out.println("Vous avez choisi " + choosenCard);
 
 		return choosenCard;
 	}
@@ -229,7 +243,7 @@ public class TextualUserInterface implements IUserInterface {
 		return cards.stream().filter(card -> card.canBePlayedOn(topCard)).collect(Collectors.toList());
 	}
 
-	private static String cardToText(ACard card) {
+	/*private static String cardToText(ACard card) {
 		String value = "";
 		switch(card.color) {
 			case Red:
@@ -282,7 +296,7 @@ public class TextualUserInterface implements IUserInterface {
 		}
 		
 		return value + " }";
-	}
+	}*/
 
 	public static void main(String[] args) {
 		new TextualUserInterface();

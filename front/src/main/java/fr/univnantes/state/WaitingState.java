@@ -11,7 +11,7 @@ class WaitingState implements State {
 	}
 
 	@Override
-	public void draw(Game game, List<ACard> cards) {
+	public void draw(Game game, List<ACard> cards, boolean forced) {
 		game.cards.addAll(cards);
 		// Rester dans le même état
 	}

@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import fr.univnantes.Client;
-import fr.univnantes.IServer;
+import fr.univnantes.IRemoteServer;
 import fr.univnantes.cards.ACard;
 
 public class Game {
 	final Client client;
-	final IServer server;
+	final IRemoteServer server;
 
 	State state;
 	public final List<ACard> cards = new ArrayList<>(); // Liste de nos cartes
@@ -22,7 +22,7 @@ public class Game {
 	int nbPlayers;
 	int initialNumberOfCards;
 
-	public Game(Client client, IServer server) {
+	public Game(Client client, IRemoteServer server) {
 		this.client = client;
 		this.server = server;
 
@@ -74,8 +74,8 @@ public class Game {
 		state.playCard(this, card);
 	}
 
-	public void draw(List<ACard> cards) throws StateException {
-		state.draw(this, cards);
+	public void draw(List<ACard> cards, boolean forced) throws StateException {
+		state.draw(this, cards, forced);
 	}
 	
 
@@ -123,6 +123,11 @@ public class Game {
 
 	public void cardPlayedBySomeoneElse(String otherClient, ACard card) throws StateException {
 		state.cardPlayedBySomeoneElse(this, otherClient, card);
+	}
+
+
+	public void endGame(String winner) {
+		state.endGame(this, winner);
 	}
 
 	public void replay() throws StateException {

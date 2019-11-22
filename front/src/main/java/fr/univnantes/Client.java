@@ -15,7 +15,7 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public final String name;
 	public final IUserInterface ui;
 	final Game game;
-	final IServer server;
+	final IRemoteServer server;
 	private List<String> players;
 
 	public Client(String name, IUserInterface ui) throws RemoteException {
@@ -24,10 +24,10 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		this.name = name;
 		this.ui = ui;
 
-		IServer s = null;
+		IRemoteServer s = null;
 
 		try {
-			s = (IServer)Naming.lookup("rmi://localhost:1099/Uno");
+			s = (IRemoteServer)Naming.lookup("rmi://localhost:1099/Uno");
 			s.join((IRemoteClient)this);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -59,13 +59,13 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	}
 
 	@Override
-	public void draw(List<ACard> cards) throws RemoteException {
+	public void draw(List<ACard> cards, boolean forced) throws RemoteException {
 		try {
-			game.draw(cards);
+			game.draw(cards, forced);
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
-		ui.draw(cards);
+		ui.draw(cards, forced);
 	}
 
 	@Override
@@ -136,6 +136,12 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 			e.printStackTrace();
 		}
 		ui.cardPlayedBySomeoneElse(otherClient, card);
+	}
+
+	@Override
+	public void endGame(String winner) throws RemoteException {
+		game.endGame(winner);
+		ui.endGame(winner);
 	}
 
 	@Override

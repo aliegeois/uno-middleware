@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 
 import fr.univnantes.cards.*;
 
-public class Server extends UnicastRemoteObject implements IServer {
+public class Server extends UnicastRemoteObject implements IRemoteServer {
 	private static final long serialVersionUID = 4419803375268480151L;
 
 	private static Predicate<? super ACard> isSkip() { return card -> card instanceof EffectCard && ((EffectCard)card).effect == Effect.Skip; }
@@ -35,25 +35,52 @@ public class Server extends UnicastRemoteObject implements IServer {
 		}
 
 		void yourTurn() throws RemoteException {
+			System.out.println("Debut du tour de " + name + ", sa main: " + ACard.asText(cards));
 			while(cards.stream().noneMatch(c -> c.canBePlayedOn(playedCards.peek()))) {
 				List<ACard> cardsDrawn = cardsToDraw(1);
+				System.out.println("Aucune carte jouable, " + name + " pioche " + cardsDrawn.get(0));
 				cards.addAll(cardsDrawn);
-				client.draw(cardsDrawn);
+				System.out.println("Main de " + name + " : " + ACard.asText(cards));
+				client.draw(cardsDrawn, true);
 			}
 			client.yourTurn();
+		}
+
+		void playCard(ACard card) {
+			playedCards.push(card);
+			System.out.println(name + " joue " + card);
+			cards.removeIf(c -> c.id == card.id);
+			System.out.println("Sa main : " + ACard.asText(cards));
+			
+			players.values().stream()
+			.filter(lc -> lc.index != index)
+			.forEach(lc -> {
+				try {
+					lc.client.cardPlayedBySomeoneElse(name, card);
+				} catch(RemoteException e) {
+					e.printStackTrace();
+				}
+			});
+
+			if(cards.size() == 0) {
+				players.values().forEach(lc -> {
+					try {
+						lc.client.endGame(name);
+					} catch(RemoteException e) {
+						e.printStackTrace();
+					}
+				});
+				System.exit(0);
+			}
 		}
 	}
 
 	private boolean started = false;
 	private Map<String, LocalClient> players = new HashMap<>();
 	private List<String> playersOrder = new ArrayList<>();
-	// private Map<IRemoteClient, Boolean> ready = new HashMap<>();
 
 	private List<ACard> deck = new ArrayList<ACard>();
-	// private List<List<ACard>> playersCards;
 	private Stack<ACard> playedCards = new Stack<ACard>();
-	// private List<IRemoteClient> players = new ArrayList<>();
-	//private ACard pileCard;
 	private boolean clockwise = true;
 
 	public Server() throws Exception {
@@ -71,7 +98,6 @@ public class Server extends UnicastRemoteObject implements IServer {
 		String name = client.getName();
 		players.put(name, new LocalClient(client, name, players.size()));
 		playersOrder.add(name);
-		// ready.put(client, false);
 
 		System.out.println(client.getName() + " has joined (" + players.values().stream().filter(e -> e.ready).count() + " / " + players.size() + ")");
 
@@ -80,7 +106,6 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public void setReady(String client, boolean isReady) throws RemoteException {
-		// ready.put(client, isReady);
 		players.get(client).ready = isReady;
 		System.out.println(client + " is now" + (isReady ? " " : " not ") + "ready (" + players.values().stream().filter(e -> e.ready).count() + " / " + players.size() + ")");
 		if(isReady && players.size() > 1 && players.size() < 15 && players.values().stream().noneMatch(e -> !e.ready)) {
@@ -149,26 +174,19 @@ public class Server extends UnicastRemoteObject implements IServer {
 		.filter(card -> card instanceof EffectCard ? (((EffectCard)card).effect != Effect.Wild) && (((EffectCard)card).effect != Effect.PlusFour) : true) // On récupères toutes les cartes sauf wild et plusfour
 		.filter(card -> {
 			return card.canBePlayedOn(playedCards.peek());
-			// boolean condition = card.color == playedCards.peek().color;
-			// if(card instanceof NumberCard) {
-			// 	condition |= ((NumberCard)card).value == ((NumberCard)playedCards.peek()).value;
-			// } else if(card instanceof EffectCard) { // Selon les règles, pas besoin de vérifer les wilds
-			// 	condition |= ((EffectCard)card).effect == ((EffectCard)playedCards.peek()).effect;
-			// }
-			// return condition; // On récupère toutes les cartes qui sont possiblement jouables
 		}).count();
 
 		if(nbPlayableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
 			contestedClient.client.winContest();
 			List<ACard> cardsDrawn = cardsToDraw(6);
 			players.get(contestingClient).cards.addAll(cardsDrawn);
-			nextClient(contestingClient).client.yourTurn();
+			nextClient(contestingClient).yourTurn();
 			return cardsDrawn;
 		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
 			List<ACard> cardsDrawn = cardsToDraw(4);
 			contestedClient.cards.addAll(cardsDrawn);
 			contestedClient.client.loseContest(cardsDrawn);
-			nextClient(contestingClient).client.yourTurn();
+			nextClient(contestingClient).yourTurn();
 			return new ArrayList<>();
 		}
 	}
@@ -184,22 +202,24 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public void counterPlusTwo(String client, ACard card, int nbCardsStacked) throws RemoteException {
-		players.get(client).cards.remove(card);
-		sendCardPlayed(client, card);
+		players.get(client).playCard(card);
+		/*.cards.remove(card);
+		sendCardPlayed(client, card);*/
 		if(nextClient(client).cards.stream().anyMatch(isPlusTwo())) {
 			nextClient(client).client.getPlusTwoed(nbCardsStacked);
 		} else {
 			List<ACard> cardsDrawn = cardsToDraw(2 *nbCardsStacked);
 			nextClient(client).cards.addAll(cardsDrawn);
-			nextClient(client).client.draw(cardsDrawn);
-			nextClient(nextClient(client).name).client.yourTurn();
+			nextClient(client).client.draw(cardsDrawn, false);
+			nextClient(nextClient(client).name).yourTurn();
 		}
 	}
 
 	@Override
 	public void counterSkip(String client, ACard card) throws RemoteException {
-		players.get(client).cards.remove(card);
-		sendCardPlayed(client, card);
+		players.get(client).playCard(card);
+		/*.cards.remove(card);
+		sendCardPlayed(client, card);*/
 		if(nextClient(client).cards.stream().anyMatch(isSkip())) {
 			nextClient(client).client.getSkipped();
 		} else {
@@ -209,8 +229,9 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public void playCard(String client, ACard card) throws RemoteException {
-		players.get(client).cards.remove(card);
-		sendCardPlayed(client, card);
+		players.get(client).playCard(card);
+		/*.cards.remove(card);
+		sendCardPlayed(client, card);*/
 
 		// if(client.getCards().size() == 0) {
 		// 	// Dire à tout le monde qu'il a gagné
@@ -231,7 +252,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 					} else {
 						List<ACard> cardsDrawn = cardsToDraw(2);
 						nextClient(client).cards.addAll(cardsDrawn);
-						nextClient(client).client.draw(cardsDrawn);
+						nextClient(client).client.draw(cardsDrawn, false);
 						nextClient(nextClient(client).name).yourTurn();
 					}
 					break;
@@ -240,12 +261,14 @@ public class Server extends UnicastRemoteObject implements IServer {
 					clockwise = !clockwise;
 					nextClient(client).yourTurn();
 					break;
+				
+				case Wild:
+					nextClient(client).yourTurn();
+					break;
 
 				case PlusFour:
 					nextClient(client).client.aboutToDrawFourCards();
 					break;
-
-				default:
 			}
 		} else if(card instanceof NumberCard) {
 			nextClient(client).yourTurn();
@@ -266,7 +289,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 	 * @param card La carte qui vient d'être jouée
 	 * @throws RemoteException
 	 */
-	private void sendCardPlayed(String client, ACard card) throws RemoteException {
+	/*private void sendCardPlayed(String client, ACard card) throws RemoteException {
 		playedCards.push(card);
 
 		LocalClient currentClient = players.get(client);
@@ -280,7 +303,7 @@ public class Server extends UnicastRemoteObject implements IServer {
 				e.printStackTrace();
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Pioche autant de cartes que demandé et shuffle la pile de cartes si besoin

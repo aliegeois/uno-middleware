@@ -25,6 +25,25 @@ public class NumberCard extends ACard {
 	
 	@Override
 	public String toString() {
-		return "(" + color.name() + ", " + value + ")";
+		// String text = ANSIColor.PURPLE.toString() + "/" + id + "/" + ANSIColor.RESET;
+		String text = "";
+		switch(color) {
+			case Red:
+				text += ANSIColor.RED.toString();
+				break;
+			case Blue:
+				text += ANSIColor.BLUE.toString();
+				break;
+			case Green:
+				text += ANSIColor.GREEN.toString();
+				break;
+			case Yellow:
+				text += ANSIColor.YELLOW.toString();
+				break;
+			case Wild:
+				text += ANSIColor.WHITE.toString();
+		}
+
+		return text + "[ " + value + " ]" + ANSIColor.RESET;
 	}
 }

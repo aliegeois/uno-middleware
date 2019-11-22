@@ -1,4 +1,4 @@
-package fr.univnantes;
+package fr.univnantes.cards;
 
 public enum ANSIColor {
 	RESET("\u001B[0m"),

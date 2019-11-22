@@ -37,6 +37,7 @@ class PlayingState implements State {
 	@Override
 	public void playCard(Game game, ACard card) {
 		game.cards.remove(card);
+		game.topCard = card;
 		if(card instanceof EffectCard && ((EffectCard)card).effect == Effect.PlusFour)
 			game.setState(new WillGetContestedState());
 		else

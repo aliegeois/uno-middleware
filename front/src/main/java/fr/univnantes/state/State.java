@@ -21,19 +21,10 @@ interface State {
 	default void yourTurn(Game game) throws StateException {
 		throw new StateException(this, WaitingState.class, "yourTurn");
 	}
-	/*default void playStandardCard(Game game, ACard card) throws StateException { // numbers, skip, reverse and +2
-		throw new StateException(this, PlayingState.class, "playStandardCard");
-	}
-	default void playPlusFourCard(Game game, ACard card) throws StateException {
-		throw new StateException(this, PlayingState.class, "playPlusFourCard");
-	}
-	default void playWildCard(Game game, ACard card) throws StateException { // Wild and wild+4
-		throw new StateException(this, PlayingState.class, "playWildCard");
-	}*/
 	default void playCard(Game game, ACard card) throws StateException { // Wild and wild+4
 		throw new StateException(this, PlayingState.class, "playWildCard");
 	}
-	default void draw(Game game, List<ACard> cards) throws StateException { // Stays in the same state
+	default void draw(Game game, List<ACard> cards, boolean forced) throws StateException { // Stays in the same state
 		throw new StateException(this, WaitingState.class, "draw");
 	}
 
@@ -72,6 +63,10 @@ interface State {
 
 	default void cardPlayedBySomeoneElse(Game game, String otherPlayer, ACard card) throws StateException {
 		throw new StateException(this, WaitingState.class, "cardPlayedBySomeoneElse");
+	}
+
+	default void endGame(Game game, String winner) {
+		game.setState(new EndGameState());
 	}
 
 	default void replay(Game game) throws StateException {

@@ -6,7 +6,7 @@ import java.util.List;
 
 import fr.univnantes.cards.ACard;
 
-public interface IServer extends Remote {
+public interface IRemoteServer extends Remote {
 	public boolean join(IRemoteClient client) throws RemoteException;
 	public void setReady(String client, boolean ready) throws RemoteException;
 
