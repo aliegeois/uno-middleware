@@ -108,7 +108,7 @@ public class TextualUserInterface implements IUserInterface {
 	public void aboutToDrawFourCards() {
 		int answer = 0;
 		do {
-			System.out.println("Vous allez piochez 4 cartes, voulez-vous le contestez ? (oui/non)");
+			System.out.println("Vous allez piocher 4 cartes, voulez-vous le contestez ? (oui/non)");
 			String input = console.readLine();
 			if("oui".equalsIgnoreCase(input))
 				answer = 1;
