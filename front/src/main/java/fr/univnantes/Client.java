@@ -85,7 +85,6 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
-		ui.winContest();
 	}
 
 	@Override
@@ -95,7 +94,6 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 		} catch(StateException e) {
 			e.printStackTrace();
 		}
-		ui.loseContest(cards);
 	}
 
 	@Override

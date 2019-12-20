@@ -11,8 +11,8 @@ public interface IUserInterface {
 	public void draw(List<ACard> cards, boolean forced);
 
 	public void aboutToDrawFourCards();
-	public void winContest();
-	public void loseContest(List<ACard> cards);
+	public void winContest(boolean hasContested);
+	public void loseContest(List<ACard> cards, boolean hasContested);
 	public void getContested();
 
 	public void getSkipped();

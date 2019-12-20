@@ -130,13 +130,16 @@ public class TextualUserInterface implements IUserInterface {
 	}
 
 	@Override
-	public void winContest() {
-		System.out.println("Vous avez gagnez le conteste, le joueur precedent pioche 6 cartes");
+	public void winContest(boolean hasContested) {
+		if(hasContested)
+			System.out.println("Vous avez gagnez le conteste, le joueur precedent pioche 6 cartes");
+		else
+			System.out.println("Le joueur suivant a tente de contester votre +4, il perd et pioche 4 cartes");
 	}
 
 	@Override
-	public void loseContest(List<ACard> cards) {
-		System.out.print("Vous perdez le conteste, vous piochez 4 cartes : " + ACard.asText(cards, false));
+	public void loseContest(List<ACard> cards, boolean hasContested) {
+		System.out.print("Vous perdez le conteste, vous piochez " + cards.size() + " cartes : " + ACard.asText(cards, false));
 	}
 
 	@Override

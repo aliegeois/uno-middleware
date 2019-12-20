@@ -167,37 +167,43 @@ public class Server extends UnicastRemoteObject implements IRemoteServer {
 	}
 
 	@Override
-	public List<ACard> contest(String contestingClient) throws RemoteException {
+	public void contest(String contestingClient) throws RemoteException {
 		LocalClient contestedClient = previousClient(contestingClient);
 
 		long nbPlayableCards = contestedClient.cards.stream()
 		.filter(card -> card instanceof EffectCard ? (((EffectCard)card).effect != Effect.Wild) && (((EffectCard)card).effect != Effect.PlusFour) : true) // On récupères toutes les cartes sauf wild et plusfour
-		.filter(card -> {
-			return card.canBePlayedOn(playedCards.peek());
-		}).count();
+		.filter(card -> card.canBePlayedOn(playedCards.peek())).count();
 
 		if(nbPlayableCards == 0) { // contest perdu car l'autre joueur ne pouvait en effet rien jouer
 			contestedClient.client.winContest();
+
 			List<ACard> cardsDrawn = cardsToDraw(6);
 			players.get(contestingClient).cards.addAll(cardsDrawn);
+			players.get(contestingClient).client.loseContest(cardsDrawn);
+
 			nextClient(contestingClient).yourTurn();
-			return cardsDrawn;
+			// return cardsDrawn;
 		} else { // contest gagné car l'autre joueur aurait pu poser une autre carte
 			List<ACard> cardsDrawn = cardsToDraw(4);
 			contestedClient.cards.addAll(cardsDrawn);
 			contestedClient.client.loseContest(cardsDrawn);
-			nextClient(contestingClient).yourTurn();
-			return new ArrayList<>();
+
+			players.get(contestingClient).client.winContest();
+			players.get(contestingClient).client.yourTurn();
+			// nextClient(contestingClient).yourTurn();
+			// return new ArrayList<>();
 		}
 	}
 
 	@Override
-	public List<ACard> doNotContest(String client) throws RemoteException {
+	public void doNotContest(String client) throws RemoteException {
 		previousClient(client).client.winContest();
-		nextClient(client).yourTurn();
+
 		List<ACard> cardsDrawn = cardsToDraw(4);
 		players.get(client).cards.addAll(cardsDrawn);
-		return cardsDrawn;
+		players.get(client).client.loseContest(cardsDrawn);
+
+		nextClient(client).yourTurn();
 	}
 
 	@Override
