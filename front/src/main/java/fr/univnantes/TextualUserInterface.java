@@ -61,8 +61,6 @@ public class TextualUserInterface implements IUserInterface {
 			System.out.println(ANSIColor.CYAN.toString() + "Vous n'avez aucune carte jouable" + ANSIColor.RESET.toString());
 			return;
 		}
-		// System.out.println("Liste de vos cartes jouables :");
-		// System.out.println(cardsToText(pCards, true));
 		
 		ACard cardToPlay = chooseACard(pCards);
 
@@ -87,12 +85,6 @@ public class TextualUserInterface implements IUserInterface {
 		}
 
 		client.playCard(cardToPlay);
-
-		/*if(cardToPlay instanceof EffectCard && ((EffectCard)cardToPlay).effect == Effect.PlusFour) {
-			client.playPlusFourCard(cardToPlay);
-		} else {
-			client.playStandardCard(cardToPlay);
-		}*/
 	}
 
 	@Override
@@ -139,7 +131,7 @@ public class TextualUserInterface implements IUserInterface {
 
 	@Override
 	public void loseContest(List<ACard> cards, boolean hasContested) {
-		System.out.print("Vous perdez le conteste, vous piochez " + cards.size() + " cartes : " + ACard.asText(cards, false));
+		System.out.println("Vous perdez le conteste, vous piochez " + cards.size() + " cartes : " + ACard.asText(cards, false));
 	}
 
 	@Override
@@ -245,61 +237,6 @@ public class TextualUserInterface implements IUserInterface {
 	private static List<ACard> playableCards(List<ACard> cards, ACard topCard) {
 		return cards.stream().filter(card -> card.canBePlayedOn(topCard)).collect(Collectors.toList());
 	}
-
-	/*private static String cardToText(ACard card) {
-		String value = "";
-		switch(card.color) {
-			case Red:
-				value = ANSIColor.RED.toString();
-				break;
-			case Blue:
-				value = ANSIColor.BLUE.toString();
-				break;
-			case Green:
-				value = ANSIColor.GREEN.toString();
-				break;
-			case Yellow:
-				value = ANSIColor.YELLOW.toString();
-				break;
-			case Wild:
-				value = ANSIColor.WHITE.toString();
-		}
-
-		value += "[ ";
-
-		if(card instanceof EffectCard) {
-			switch(((EffectCard)card).effect) {
-				case Skip:
-				case Reverse:
-				case Wild:
-					value += ((EffectCard)card).effect.name();
-					break;
-				case PlusTwo:
-					value += "+2";
-					break;
-				case PlusFour:
-					value += "+4";
-					break;
-			}
-		} else if(card instanceof NumberCard) {
-			value += ((NumberCard)card).value;
-		}
-
-		return value + " ]" + ANSIColor.RESET;
-	}
-
-	private static String cardsToText(List<ACard> cards, boolean showNumbers) {
-		String value = "{ ";
-		for(int i = 0; i < cards.size(); i++) {
-			if(showNumbers)
-				value += "(" + (i+1) + ")";
-			value += cardToText(cards.get(i));
-			if(i != cards.size() - 1)
-				value += " - ";
-		}
-		
-		return value + " }";
-	}*/
 
 	public static void main(String[] args) {
 		new TextualUserInterface();

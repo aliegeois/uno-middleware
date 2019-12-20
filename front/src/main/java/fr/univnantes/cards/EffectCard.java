@@ -18,14 +18,13 @@ public class EffectCard extends ACard {
 		boolean playable = super.canBePlayedOn(otherCard);
 		
 		if(otherCard instanceof EffectCard)
-			playable |= effect == ((EffectCard)otherCard).effect;
+			playable = playable || effect == ((EffectCard)otherCard).effect;
 
 		return playable;
 	}
 	
 	@Override
 	public String toString() {
-		// String text = ANSIColor.PURPLE.toString() + "/" + id + "/" + ANSIColor.RESET;
 		String text = "";
 		switch(color) {
 			case Red:

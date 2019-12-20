@@ -18,7 +18,6 @@ public class Game {
 	ACard topCard;
 	
 	Map<String, Integer[]> opponentsCards = new HashMap<>();
-	// Integer[] opponentsCards; // Nombre de cartes de chaque autre joueur
 	int nbPlayers;
 	int initialNumberOfCards;
 
@@ -57,18 +56,6 @@ public class Game {
 	public void yourTurn() throws StateException {
 		state.yourTurn(this);
 	}
-
-	/*public void playStandardCard(ACard card) throws StateException {
-		state.playStandardCard(this, card);
-	}
-
-	public void playPlusFourCard(ACard card) throws StateException {
-		state.playPlusFourCard(this, card);
-	}
-
-	public void playWildCard(ACard card) throws StateException {
-		state.playWildCard(this, card);
-	}*/
 
 	public void playCard(ACard card) throws StateException {
 		state.playCard(this, card);

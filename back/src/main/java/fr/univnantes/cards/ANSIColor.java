@@ -1,5 +1,8 @@
 package fr.univnantes.cards;
 
+/**
+ * Classe utilisée pour la coloration de la console
+ */
 public enum ANSIColor {
 	RESET("\u001B[0m"),
 	BLACK("\u001B[30m"),

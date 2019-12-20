@@ -203,33 +203,6 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 			e.printStackTrace();
 		}
 	}
-	
-	/*@Override
-	public void playStandardCard(ACard card) {
-		try {
-			game.playStandardCard(card);
-		} catch(StateException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void playPlusFourCard(ACard card) {
-		try {
-			game.playPlusFourCard(card);
-		} catch(StateException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void playWildCard(ACard card) {
-		try {
-			game.playWildCard(card);
-		} catch(StateException e) {
-			e.printStackTrace();
-		}
-	}*/
 
 	@Override
 	public void playCard(ACard card) {
@@ -244,20 +217,4 @@ public class Client extends UnicastRemoteObject implements ILocalClient, IRemote
 	public String getName() throws RemoteException {
 		return name;
 	}
-
-	// @Override
-	// public void setCards(List<ACard> cards) throws RemoteException {
-	// 	// set cards
-		
-	// }
-
-	// @Override
-	// public List<ACard> getCards() throws RemoteException {
-	// 	return game.getCards();
-	// }
-
-	// @Override
-	// public boolean isPlaying() throws RemoteException {
-	// 	return palying;
-	// }
 }

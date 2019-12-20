@@ -25,7 +25,6 @@ public class NumberCard extends ACard {
 	
 	@Override
 	public String toString() {
-		// String text = ANSIColor.PURPLE.toString() + "/" + id + "/" + ANSIColor.RESET;
 		String text = "";
 		switch(color) {
 			case Red:

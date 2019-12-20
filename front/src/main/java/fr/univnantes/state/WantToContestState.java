@@ -11,16 +11,6 @@ class WantToContestState implements State {
 		} catch(RemoteException e) {
 			e.printStackTrace();
 		}
-		/*try {
-			List<ACard> cardsToDraw = game.server.contest(game.client.name);
-			if(cardsToDraw.size() > 0) {
-				game.setState(new WaitingState());
-				game.cards.addAll(cardsToDraw);
-				game.client.ui.draw(cardsToDraw, false);
-			} else {
-				game.setState(new PlayingState());
-			}
-		} catch(RemoteException e) {}*/
 	}
 
 	@Override
@@ -31,10 +21,5 @@ class WantToContestState implements State {
 		} catch(RemoteException e) {
 			e.printStackTrace();
 		}
-		/*try {
-			List<ACard> cardsToDraw = game.server.doNotContest(game.client.name);
-			game.cards.addAll(cardsToDraw);
-			game.client.ui.draw(cardsToDraw, false);
-		} catch(RemoteException e) {}*/
 	}
 }

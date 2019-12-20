@@ -14,11 +14,4 @@ class CounterSkipState implements State {
 			game.server.counterSkip(game.client.name, card);
 		} catch(RemoteException e) {}
 	}
-
-	// public void doNotCounterSkip(Game game) throws StateException {
-	// 	try {
-	// 		game.server.doNotCounterSkip(game.client.name);
-	// 	} catch (RemoteException e) {}
-	// 	game.setState(new WaitingState());
-	// }
 }
