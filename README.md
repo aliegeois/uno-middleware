@@ -1,7 +1,7 @@
 # Rapport projet Middleware - Uno en RMI
 
 - [Charles Bequet--Ermoy](https://github.com/cbequet)
-- [Ronan Gugéguen](https://github.com/Kairides)
+- [Ronan Guéguen](https://github.com/Kairides)
 - [Hanane Hadji](https://github.com/nounou95)
 - [Arthur Liégeois](https://github.com/aliegeois)
 
