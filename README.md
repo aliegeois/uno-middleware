@@ -1,5 +1,10 @@
 # Rapport projet Middleware - Uno en RMI
 
+- [Charles Bequet--Ermoy](https://github.com/cbequet)
+- [Ronan Gugéguen](https://github.com/Kairides)
+- [Hanane Hadji](https://github.com/nounou95)
+- [Arthur Liégeois](https://github.com/aliegeois)
+
 ## Règles du jeu
 Le Uno possède un grand nombre de variations des règles, nous nous sommes basés sur celles-ci : [Uno rules by Kade "Archer" Hansson](http://play-k.kaserver5.org/Uno.html).
 
