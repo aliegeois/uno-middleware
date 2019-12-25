@@ -1,7 +1,7 @@
 # Rapport projet Middleware - Uno en RMI
 
 ## Règles du jeu
-Le uno possède un grand nombre de variations des règles, nous nous sommes basés sur celles-ci : [Uno rules by Kade "Archer" Hansson](http://play-k.kaserver5.org/Uno.html).
+Le Uno possède un grand nombre de variations des règles, nous nous sommes basés sur celles-ci : [Uno rules by Kade "Archer" Hansson](http://play-k.kaserver5.org/Uno.html).
 
 ## Structure du programme
 Architecture client/serveur complètement centralisée. Les clients se connectent au serveur pour chercher une partie, et conservent cette connexion lorsque la partie est lancée. Ceci est nécessaire puisque le Uno a besoin d’une pioche centrale qui est partagée entre les joueurs. Faire un système décentralisé aurait nécessité de faire un consensus à chaque fois qu’un joueur veut piocher une carte, ce qui est très lourd.
